@@ -5,17 +5,17 @@
 import numpy as np
 #1. 데이터
 x = np.array([range(100), range(301, 401), range(1, 101), range(501, 601)])
-y = np.array([range(711, 811), range(211, 311)])
+y = np.array([range(711, 811)])
 
 print(x.shape)      # (4, 100)
-print(y.shape)      # (2, 100)
+print(y.shape)      # (1, 100)
 
 # x = np.arange(20).reshape(10,2)
 x = np.transpose(x)
 y = np.transpose(y)
 print(x)
 print(x.shape)      # (100, 4)
-print(y.shape)      # (100, 2)
+print(y.shape)      # (100, 1)
 
 from sklearn.model_selection import train_test_split
 x_train, x_test, y_train, y_test = train_test_split(
@@ -35,7 +35,7 @@ aaa = Dense(100)(aaa)
 aaa = Dense(50)(aaa)
 aaa = Dense(50)(aaa)
 aaa = Dense(50)(aaa)
-outputs = Dense(2)(aaa)
+outputs = Dense(1)(aaa)
 model = Model(inputs = input1, outputs = outputs)
 model.summary
 
