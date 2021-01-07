@@ -50,10 +50,16 @@ from tensorflow.keras.utils import to_categorical
 
 # OneHotEncoding(sklearn)
 from sklearn.preprocessing import OneHotEncoder
-y = y.reshape(-1, 1)
-ohe = OneHotEncoder()
-ohe.fit(y)
-y = ohe.transform(y).toarray()
+y_train = y_train.reshape(-1, 1)
+y_test = y_test.reshape(-1, 1)
+y_val = y_val.reshape(-1, 1)
+
+one = OneHotEncoder()
+one.fit(y_train)
+y_train = one.transform(y_train).toarray()
+y_test = one.transform(y_test).toarray()
+y_val = one.transform(y_val).toarray()
+
 
 # 2. 모델 구성
 from tensorflow.keras.models import Sequential, Model

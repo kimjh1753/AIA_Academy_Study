@@ -15,14 +15,13 @@ print(x[:5])
 print(y[:10])
 
 print(np.max(x), np.min(x)) # 711.0 0.0
-
 print(dataset.feature_names)
 # print(dataset.DESCR)
 
 # 데이터 전처리(MinMax)
 x = x /711.
 # x = (x - 최소) / (최대 - 최소)
-#   = (x - np.mix(x) / (np.max(x) - np.min(x))
+#   = (x - np.mix(x) / (np.max(x) - np.min(x)))
 
 from sklearn.model_selection import train_test_split
 x_train, x_test, y_train, y_test = train_test_split(

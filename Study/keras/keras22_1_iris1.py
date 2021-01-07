@@ -17,21 +17,6 @@ print(y)
 
 # 전처리 알아서 해 / MinMaxScaler, train_test_split
 
-# ## OneHotEncoding
-# from tensorflow.keras.utils import to_categorical
-# # from keras.utils.np_utils import to_categorical
-
-# y = to_categorical(y)
-# # y_train = to_categorical(y_train)
-# # y_test = to_categorical(y_test)
- 
-print(y)
-print(x.shape)  # (150, 4)
-print(y.shape)  # (150, 3)
-
-# print(np.max(x[0]))
-
-
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
 x_train, x_test, y_train, y_test = train_test_split(

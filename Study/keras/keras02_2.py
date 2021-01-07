@@ -13,7 +13,6 @@ y_test = np.array([111,112,113,114,115,116,117,118,119,120])
 
 x_predict = np.array([111,112,113])
 
-
 #2. 모델구성
 model = Sequential()
 # model = models.Sequential()
@@ -21,7 +20,6 @@ model = Sequential()
 model.add(Dense(40, input_dim=1, activation='relu'))
 model.add(Dense(320, activation='linear'))
 model.add(Dense(1))
-
 
 #3. 컴파일, 훈련
 model.compile(loss='mse', optimizer='adam')

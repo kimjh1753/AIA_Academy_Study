@@ -3,11 +3,11 @@ import numpy as np
 
 x = np.array([[1,2,3], [2,3,4], [3,4,5], [4,5,6]])
 y = np.array([4,5,6,7])
-x_pred = np.array([5,6,7])
+# x_pred = np.array([5,6,7])
 
 print("x.shape : ", x.shape)        # (4, 3)
 print("y.shape : ", y.shape)        # (4,)
-print("x_pred : ", x_pred.shape)    # (3,)    
+# print("x_pred : ", x_pred.shape)    # (3,)    
 
 # x_pred = x_pred.reshape(1, 3)
 
@@ -18,7 +18,7 @@ print("x_pred : ", x_pred.shape)    # (3,)
 # x_pred = scaler.transform(x_pred)
 
 x = x.reshape(4, 3, 1)
-x_pred = x_pred.reshape(1, 3, 1)  
+# x_pred = x_pred.reshape(1, 3, 1)  
 
 # 2. 모델 구성
 from tensorflow.keras.models import Sequential

@@ -17,7 +17,7 @@ print("y.shape : ", y.shape)        # (4,)
 # x = scaler.transform(x)
 # x_pred = scaler.transform(x_pred)
 
-# x = x.reshape(4, 3, 1)  
+x = x.reshape(4, 3, 1)  
 # x_pred = x_pred.reshape(1, 3, 1)
 
 # 2. 모델 구성

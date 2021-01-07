@@ -1,3 +1,5 @@
+# metrics가 다른 경우
+
 import numpy as np
 #1. 데이터
 x1 = np.array([range(100), range(301, 401), range(1, 101)])
@@ -66,7 +68,7 @@ model = Model(inputs=[input1, input2],
 model.summary()
 
 #3. 컴파일, 훈련
-model.compile(loss='mse', optimizer='adam', metrics=['mae'])
+model.compile(loss='mse', optimizer='adam', metrics=['mae', 'mse'])
 model.fit([x1_train, x2_train], [y1_train, y2_train],
            epochs=10, batch_size=1,
            validation_split=0.2, verbose=1)
@@ -80,9 +82,9 @@ print(loss)
 y1_predict, y2_predict = model.predict([x1_test, x2_test])
 
 print("=======================")
-print("y1_predict : \n", y1_predict)
-print("=======================")
-print("y2_predict : \n", y2_predict)
+# print("y1_predict : \n", y1_predict)
+# print("=======================")
+# print("y2_predict : \n", y2_predict)
 print("=======================")
 
 # RMSE 구하기

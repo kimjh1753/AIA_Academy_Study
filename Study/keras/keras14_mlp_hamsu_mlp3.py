@@ -17,7 +17,7 @@ x_pred2 = x_pred2.reshape(1, 1)
 
 print(x)
 print(x.shape)      # (100, 1)
-print(y.shape)      # (4, 100)
+print(y.shape)      # (100, 4)
 print("x_pred2.shape : ", x_pred2.shape)    #(1, 1) 
 
 from sklearn.model_selection import train_test_split

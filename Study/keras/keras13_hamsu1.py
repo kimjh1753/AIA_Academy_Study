@@ -49,10 +49,10 @@ model.summary()
 # model.add(Dense(2))
 # model.summary()
 
-"""
+
 #3. 컴파일, 훈련
 model.compile(loss='mse', optimizer='adam', metrics=['mae'])
-model.fit(x_train, y_train, epochs=100, batch_size=1, 
+model.fit(x_train, y_train, epochs=5000, batch_size=1, 
           validation_split=0.2, verbose=3)
 
 #4. 평가, 예측
@@ -81,4 +81,3 @@ y_pred2 = model.predict(x_pred2)
 print(y_pred2)
 
 # [[187.35754  83.19966]]
-"""

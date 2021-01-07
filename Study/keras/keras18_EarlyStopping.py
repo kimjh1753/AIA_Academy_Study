@@ -25,12 +25,12 @@ print(dataset.feature_names)
 print(np.max(x[0]))
 
 from sklearn.preprocessing import MinMaxScaler
-scaler = MinMaxScaler()
-scaler.fit(x)
-x = scaler.transform(x)
+# scaler = MinMaxScaler()
+# scaler.fit(x)
+# x = scaler.transform(x)
 
-print(np.max(x), np.min(x)) # 711.0 0.0 => 1.0 0.0
-print(np.max(x[0]))
+# print(np.max(x), np.min(x)) # 711.0 0.0 => 1.0 0.0
+# print(np.max(x[0]))
 
 
 from sklearn.model_selection import train_test_split
@@ -39,6 +39,19 @@ x_train, x_test, y_train, y_test = train_test_split(
 )
 print(x_train.shape)
 print(y_train.shape)
+
+x_train, x_val, y_train, y_val= train_test_split(x_train, y_train, train_size = 0.8, shuffle=True)
+
+print(x_train.shape)
+print(x_val.shape)
+
+
+scaler = MinMaxScaler()
+scaler.fit(x_train)
+x_train = scaler.transform(x_train)
+x_test = scaler.transform(x_test)
+x_val = scaler.transform(x_val)
+
 
 #2. 모델 구성
 from tensorflow.keras.models import Sequential, Model
@@ -71,13 +84,16 @@ model.summary()
 
 #3. 컴파일, 훈련
 model.compile(loss='mse', optimizer='adam', metrics=['mae'])
-model.fit(x_train, y_train, epochs=100, batch_size=8,
-          validation_split=0.2, verbose=1)
+
+from tensorflow.keras.callbacks import EarlyStopping
+early_stopping = EarlyStopping(monitor='loss', patience=40, mode='auto')
+
+model.fit(x_train, y_train, validation_data=(x_val, y_val), 
+        epochs=2000, batch_size=8, callbacks=[early_stopping], verbose=1)
 
 #4. 평가, 예측
-loss, mae = model.evaluate(x_test, y_test, batch_size=8)
+loss, mae = model.evaluate(x_test, y_test)
 print("loss, mae : ", loss, mae)
-
 
 y_predict = model.predict(x_test)
 # print(y_predict)
@@ -108,7 +124,25 @@ print("R2 : ", r2)
 # R2 :  0.851302538041412
 
 # x 통째로 전처리한놈
-# loss, mae :  14.775877952575684 2.445089817047119
-# RMSE :  3.843940663250225
-# mse :  14.775879822588578
-# R2 :  0.823218945226423
+# loss, mae :  9.726927757263184 2.064275026321411
+# RMSE :  3.118802284915046
+# mse :  9.72692769239131
+# R2 :  0.8836254383621532
+
+# 제대로 전처리
+# loss, mae :  521.8694458007812 10.636632919311523
+# RMSE :  22.844437006386865
+# mse :  521.8683021387776
+# R2 :  -5.243718141504652
+
+# validation 값 분리
+# loss, mae :  6.475992679595947 1.9397125244140625
+# RMSE :  2.5447971155415856
+# mse :  6.475992359268774
+# R2 :  0.9225201630141171
+
+# EarlyStopping(patience=30) 사용
+# loss, mae :  5.496500492095947 1.8316468000411987
+# RMSE :  2.344461644241536
+# mse :  5.496500401319727
+# R2 :  0.9342389657891477
