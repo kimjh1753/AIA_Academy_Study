@@ -91,11 +91,11 @@ model.compile(loss='categorical_crossentropy', optimizer='adam',
 from tensorflow.keras.callbacks import EarlyStopping
 early_stopping = EarlyStopping(monitor='loss', patience=30, mode='auto')
 
-model.fit(x_train, y_train, epochs=2000, validation_data=(x_val, y_val), 
+model.fit(x_train, y_train, epochs=2000, validation_data=(x_val, y_val),
           callbacks=[early_stopping], verbose=1)
 
 # 4. 평가, 예측
-loss, acc = model.evaluate(x_test, y_test)
+loss, acc = model.evaluate(x_test, y_test, batch_size=1)
 print("loss, acc : ", loss, acc)
 
 # 실습1. acc 0.985 이상 올릴 것

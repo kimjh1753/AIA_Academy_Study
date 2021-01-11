@@ -90,8 +90,6 @@ model.fit(x_train, y_train, epochs=100, validation_data=(x_val, y_val))
 loss, mae = model.evaluate(x_test, y_test)
 print("loss, mae : ", loss, mae)
 
-
-
 y_predict = model.predict(x_test)
 # print(y_predict)
 

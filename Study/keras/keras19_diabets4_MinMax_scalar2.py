@@ -8,7 +8,6 @@
 
 import numpy as np
 from sklearn.datasets import load_diabetes
-from sklearn.utils.validation import check_random_state
 
 dataset = load_diabetes()
 
@@ -62,49 +61,44 @@ from sklearn.model_selection import train_test_split
 x_train, x_test, y_train, y_test = train_test_split(
         x, y, train_size=0.8, shuffle=True, random_state=66
 )
-x_train, x_val, y_train, y_val = train_test_split(
-        x_train, y_train, train_size=0.8, shuffle=True, random_state=66
-)
+# x_train, x_val, y_train, y_val = train_test_split(
+#         x, y, train_size=0.8, shuffle=True, random_state=66
+# )
 
 from sklearn.preprocessing import MinMaxScaler
 scaler = MinMaxScaler()
 scaler.fit(x_train)
-x_train = scaler.transform(x_train)
-x_test = scaler.transform(x_test)
-x_val = scaler.transform(x_val)
+scaler.transform(x_train)
+scaler.transform(x_test)
+# scaler.transform(x_val)
 
 print(np.max(x), np.min(x)) # 최댓값 711.0, 최솟값 0.0      ----> 최댓값 1.0 , 최솟값 0.0
 print(np.max(x[0]))         # max = 0.9999999999999999     -----> 컬럼마다 최솟값과 최댓값을 적용해서 구해준다.
 
-
 # print(x_train.shape)    #(353, 10)
 # print(x_test.shape)     #(89, 10)
 
-# 2. 모델구성
+#2. 모델 구성
 from tensorflow.keras.models import Sequential, Model
 from tensorflow.keras.layers import Dense, Input
 
 input1 = Input(shape=(10,))
-Dense1 = Dense(100, activation='relu')(input1)
-Dense1 = Dense(100, activation='relu')(Dense1)
-Dense1 = Dense(100, activation='relu')(Dense1)
-Dense1 = Dense(100, activation='relu')(Dense1)
-Dense1 = Dense(100, activation='relu')(Dense1)
-Dense1 = Dense(100, activation='relu')(Dense1)
-Dense1 = Dense(100, activation='relu')(Dense1)
+Dense1 = Dense(120, activation='relu')(input1)
+Dense1 = Dense(120, activation='relu')(Dense1)
+Dense1 = Dense(120, activation='relu')(Dense1)
+Dense1 = Dense(120, activation='relu')(Dense1)
+Dense1 = Dense(120, activation='relu')(Dense1)
+Dense1 = Dense(120, activation='relu')(Dense1)
+Dense1 = Dense(120, activation='relu')(Dense1)
+Dense1 = Dense(120, activation='relu')(Dense1)
+Dense1 = Dense(120, activation='relu')(Dense1)
 outputs = Dense(1)(Dense1)
 model = Model(inputs = input1, outputs = outputs)
 model.summary()
 
 # 3. 컴파일, 훈련
 model.compile(loss='mse', optimizer='adam', metrics=['mae'])
-
-from tensorflow.keras.callbacks import EarlyStopping
-early_stopping = EarlyStopping(monitor='loss', patience=20, mode='auto')
-#                               loss를 모니터링한다. / 가장 낮은 loss가 나온 후 20번만 더 시행한 후, 그때까지도 최솟값 변화가 없다면 스탑 / min, max, auto
-# 장점 : 효율이 좋다. 얼추 효율이 좋은 epochs 위치를 알 수 있다. 정지할 수 있다. epochs 조절이 가능하다.
-
-model.fit(x_train, y_train, epochs=2000, batch_size=8, validation_data=(x_val, y_val), verbose=1, callbacks=[early_stopping])
+model.fit(x_train, y_train, epochs=1000, batch_size=8, validation_split=0.2, verbose=1)
 
 # 4. 평가, 예측
 loss, mse = model.evaluate(x_test, y_test, batch_size=8)
@@ -115,8 +109,8 @@ y_predict = model.predict(x_test)
 # RMSE 구하기
 from sklearn.metrics import mean_squared_error
 def RMSE(y_test, y_predict):
-      return np.sqrt(mean_squared_error(y_test, y_predict))
-print("RMSE : ", RMSE(y_test, y_predict))
+    return np.sqrt(mean_squared_error(y_test, y_predict))
+print("RMSE : ", RMSE(y_test, y_predict))    
 print("mse : ", mean_squared_error(y_predict, y_test))
 
 # R2
@@ -135,13 +129,3 @@ print("R2 : ", r2)
 # RMSE :  67.91807113484292
 # mse :  4612.864386677584
 # R2 :  0.28923949573082375
-
-# MinMax val 분리
-# loss, mse :  4841.087890625 53.2156982421875
-# RMSE :  69.57792955158494
-# mse :  4841.088280685317
-# R2 :  0.2540742455969379
-
-# EarlyStopping
-
-

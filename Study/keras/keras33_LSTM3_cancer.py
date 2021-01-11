@@ -91,6 +91,10 @@ y_pred = model.predict(x_test[-5:-1])
 print(y_pred)
 print(y_test[-5:-1])
 
+# y_pred = np.array(model.predict(x_train[-5:-1]))
+# print(y_pred)
+# print(y_pred.argmax(axis=1))
+
 # sklearn Dense load_breast_cancer
 # loss, acc :  1.0589289665222168 0.9122806787490845
 # [[1.       ]
@@ -98,17 +102,6 @@ print(y_test[-5:-1])
 #  [1.       ]
 #  [1.       ]]
 # [1 0 1 1]
-
-# y_pred = np.array(model.predict(x_train[-5:-1]))
-# print(y_pred)
-# print(y_pred.argmax(axis=1))
-
-# loss, acc :  0.5237188339233398 0.9736841917037964
-# [[1.0000000e+00]
-#  [1.0000000e+00]
-#  [1.3445654e-36]
-#  [1.0000000e+00]]
-# [0 0 0 0]
 
 # sklearn LSTM load_breast_cancer
 # loss, acc :  0.07699385285377502 0.9736841917037964

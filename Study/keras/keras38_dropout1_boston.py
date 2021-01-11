@@ -57,31 +57,33 @@ x_val = scaler.transform(x_val)
 from tensorflow.keras.models import Sequential, Model
 from tensorflow.keras.layers import Dense, Input, Dropout
 model = Sequential()
-model.add(Dense(128, activation='relu', input_dim=13))
+model.add(Dense(1000, activation='relu', input_dim=13))
 # model.add(Dense(128, activation='relu', input_shape=(13,)))
 model.add(Dropout(0.2))
-model.add(Dense(64, activation='relu'))
+model.add(Dense(1000, activation='relu'))
 model.add(Dropout(0.2))
-model.add(Dense(64, activation='relu'))
+model.add(Dense(1000, activation='relu'))
 model.add(Dropout(0.2))
-model.add(Dense(64, activation='relu'))
+model.add(Dense(1000, activation='relu'))
 model.add(Dropout(0.2))
-model.add(Dense(64, activation='relu'))
+model.add(Dense(1000, activation='relu'))
 model.add(Dropout(0.2))
-model.add(Dense(64, activation='relu'))
+model.add(Dense(1000, activation='relu'))
 model.add(Dropout(0.2))
-model.add(Dense(64, activation='relu'))
+model.add(Dense(1000, activation='relu'))
 model.add(Dropout(0.2))
 model.add(Dense(1))
+
+model.summary()
 
 #3. 컴파일, 훈련
 model.compile(loss='mse', optimizer='adam', metrics=['mae'])
 
 from tensorflow.keras.callbacks import EarlyStopping
-early_stopping = EarlyStopping(monitor='loss', patience=40, mode='auto')
+early_stopping = EarlyStopping(monitor='loss', patience=30, mode='auto')
 
 model.fit(x_train, y_train, validation_data=(x_val, y_val), 
-        epochs=2000, batch_size=8, callbacks=[early_stopping], verbose=1)
+        epochs=2000, batch_size=32, callbacks=[early_stopping], verbose=1)
 
 #4. 평가, 예측
 loss, mae = model.evaluate(x_test, y_test)
@@ -140,7 +142,7 @@ print("R2 : ", r2)
 # R2 :  0.9342389657891477
 
 # Dropout 이후
-# loss, mae :  6.073357105255127 1.9191125631332397
-# RMSE :  2.46441815380415
-# mse :  6.073356836799455
-# R2 :  0.9273373605824557
+# loss, mae :  5.47890567779541 1.7726075649261475
+# RMSE :  2.3407061674935306
+# mse :  5.4789053625422515
+# R2 :  0.9344494757250168

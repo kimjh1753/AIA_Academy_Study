@@ -80,6 +80,7 @@ y_pred = model.predict(x_test[-5:-1])
 print(y_pred)
 print(y_test[-5:-1])
 
+# Dense cancer
 # loss, acc :  1.0589289665222168 0.9122806787490845
 # [[1.       ]
 #  [0.0028897]
