@@ -53,19 +53,51 @@ model.add(Dense(13, activation='relu'))
 model.add(Dense(3, activation='softmax'))   
 
 # 3. 컴파일, 훈련
-model.compile(loss='mse', optimizer='adam', metrics=['acc'])
+model.compile(loss='mse', optimizer='adam', metrics=['accuracy'])
 
-from tensorflow.keras.callbacks import EarlyStopping
-early_stopping = EarlyStopping(monitor='loss', patience=20, mode='auto')
-
-model.fit(x_train, y_train, epochs=2000, validation_split=0.2, 
-          verbose=1, batch_size=13, callbacks=[early_stopping])
+from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
+early_stopping = EarlyStopping(monitor='loss', patience=30, mode='auto')
+modelpath = './modelCheckPoint/k46_MC_8_wine_{epoch:02d}-{val_loss:.4f}.hdf5'
+cp = ModelCheckpoint(filepath=modelpath, monitor="val_loss", save_best_only=True, mode='auto')
+hist = model.fit(x_train, y_train, epochs=2000, validation_split=0.2, 
+          verbose=1, batch_size=13, callbacks=[early_stopping, cp])
 
 # 4. 평가, 예측
-loss, accuracy = model.evaluate(x_test, y_test, batch_size=1)
-print("loss : ", loss)
-print("accruacy : ", accuracy)
+result= model.evaluate(x_test, y_test, batch_size=1)
+print("loss : ", result[0])
+print("accruacy : ", result[1])
+
+# 시각화
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(10, 6)) # 단위 알아서 찾을 것!
+
+plt.subplot(2, 1, 1)    # 2행 1열중 첫번째
+plt.plot(hist.history['loss'], marker='.', c='red', label='loss')
+plt.plot(hist.history['val_loss'], marker='.', c='blue', label='val_loss')
+plt.grid()
+
+# plt.title('Cost loss')    # 한글깨짐 오류 해결할 것 과제1.
+plt.ylabel('loss')
+plt.xlabel('epoch')
+plt.legend(loc='upper right')
+
+plt.subplot(2, 1, 2)    # 2행 2열중 두번째
+plt.plot(hist.history['accuracy'], marker='.', c='red', label='accuracy')
+plt.plot(hist.history['val_accuracy'], marker='.', c='blue', label='val_accuracy')
+plt.grid()
+
+# plt.title('정확도')
+plt.ylabel('accuracy')
+plt.xlabel('epoch')
+plt.legend(loc='upper right')
+
+plt.show()
 
 # sklearn Dense wine
 # loss :  0.018188897520303726
+# accruacy :  0.9722222089767456
+
+# sklearn MC_7_iris wine 
+# loss :  0.01842806115746498
 # accruacy :  0.9722222089767456
