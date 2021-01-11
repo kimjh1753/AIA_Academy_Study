@@ -79,6 +79,7 @@ from sklearn.metrics import r2_score
 r2 = r2_score(y_test, y_predict)
 print("R2 : ", r2)
 
+# skleran boston Dense
 # loss, mae :  15.000182151794434 2.9936561584472656
 # RMSE :  3.873007354200969
 # mse :  15.00018596569479
