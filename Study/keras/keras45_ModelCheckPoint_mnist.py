@@ -71,11 +71,16 @@ model.summary()
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 es = EarlyStopping(monitor='val_loss', patience=30, mode='auto')
 modelpath = './modelCheckPoint/k45_mnist_{epoch:02d}-{val_loss:.4f}.hdf5'
+<<<<<<< HEAD
 # 02d = 정수 두 번째 자릿수까지 표기, .4f = 소수점 네 번째 자릿수까지 표기
 cp = ModelCheckpoint(filepath=modelpath, monitor='val_loss', 
                      save_best_only=True, mode='auto')
 # filepath - 가중치 세이브, 최저점을 찍을 때마다 weight 가 들어간 파일을 만듬
 # 세이브 된 최적 가중치를 이용해서 모델 평가, 예측을 좀 더 쉽고 빠르게 할 수 있다
+=======
+cp = ModelCheckpoint(filepath=modelpath, monitor='val_loss', 
+                     save_best_only=True, mode='auto')
+>>>>>>> 99f1ec69d7ec3b7336f0486d0173cf6479c9d60f
 model.compile(loss='categorical_crossentropy', optimizer='adam', 
               metrics=['accuracy'])
 hist = model.fit(x_train, y_train, epochs=100, validation_split=0.2, callbacks=[es, cp], batch_size=1000)
@@ -93,7 +98,11 @@ import matplotlib.font_manager as fm
 font_path = 'C:\\Users\\ai\\NanumFontSetup_TTF_GOTHIC\\NanumGothic.ttf'
 fontprop = fm.FontProperties(fname=font_path, size=18)
 
+<<<<<<< HEAD
 plt.figure(figsize=(10, 6)) # (10, 6) 의 면적을 잡음
+=======
+plt.figure(figsize=(10, 6)) # 단위 알아서 찾을 것!
+>>>>>>> 99f1ec69d7ec3b7336f0486d0173cf6479c9d60f
 
 plt.subplot(2, 1, 1)    # 2행 1열중 첫번째
 plt.plot(hist.history['loss'], marker='.', c='red', label='loss')
