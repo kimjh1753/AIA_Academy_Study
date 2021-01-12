@@ -65,7 +65,7 @@ model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accur
 
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 es = EarlyStopping(monitor='loss', patience=30, mode='auto')
-modelpath = './modelCheckPoint/k46_MC_1_fashion_{epoch:02d}-{val_loss:.4f}.hdf5'
+modelpath = '../data/modelcheckpoint/k46_MC_1_fashion_{epoch:02d}-{val_loss:.4f}.hdf5'
 cp = ModelCheckpoint(filepath=modelpath, monitor='val_loss', save_best_only=True, mode='auto')
 hist = model.fit(x_train, y_train, epochs=100, batch_size=200, verbose=1, 
                  validation_split=0.2, callbacks=[es, cp])

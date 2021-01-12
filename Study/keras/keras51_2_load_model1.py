@@ -33,39 +33,32 @@ print(y_train.shape)    # (60000, 10)
 print(y_test.shape)     # (10000, 10)
 
 # 2. 모델 구성
-from tensorflow.keras.models import Sequential
+from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Dense, Flatten, Dropout
 
-model = Sequential()
-model.add(Conv2D(filters=10, kernel_size=(2,2), padding='same',
-                 strides=1, input_shape=(28,28,1)))
-model.add(MaxPooling2D(pool_size=2))
-model.add(Dropout(0.2))
-model.add(Conv2D(10, (2,2), padding='same'))
-model.add(Conv2D(10, (2,2), padding='same'))
-model.add(Flatten())
-model.add(Dense(1000, activation='relu'))
-model.add(Dropout(0.2))
-model.add(Dense(1000, activation='relu'))
-model.add(Dropout(0.2))
-model.add(Dense(1000, activation='relu'))
-model.add(Dropout(0.2))
-model.add(Dense(1000, activation='relu'))
-model.add(Dropout(0.2))
-model.add(Dense(1000, activation='relu'))
-model.add(Dropout(0.2))
-model.add(Dense(10, activation='softmax'))
+# model = Sequential()
+# model.add(Conv2D(filters=10, kernel_size=(2,2), padding='same',
+#                  strides=1, input_shape=(28,28,1)))
+# model.add(MaxPooling2D(pool_size=2))
+# model.add(Dropout(0.2))
+# model.add(Conv2D(10, (2,2), padding='same'))
+# model.add(Conv2D(10, (2,2), padding='same'))
+# model.add(Flatten())
+# model.add(Dense(1000, activation='relu'))
+# model.add(Dropout(0.2))
+# model.add(Dense(1000, activation='relu'))
+# model.add(Dropout(0.2))
+# model.add(Dense(1000, activation='relu'))
+# model.add(Dropout(0.2))
+# model.add(Dense(1000, activation='relu'))
+# model.add(Dropout(0.2))
+# model.add(Dense(1000, activation='relu'))
+# model.add(Dropout(0.2))
+# model.add(Dense(10, activation='softmax'))
 
+model = load_model('../data/h5/k51_1_model2.h5')
 model.summary()
 
-# 실습!! 완성하시오!!!
-# 지표는 acc   /// 0.985 이상
-
-# 응용
-# y_test 10개와 y_pred 10개를 출력하시오
-
-# y_test[:10] = (?,?,?,?,?,?,?,?,?,?,?)
-# y_pred[:10] = (?,?,?,?,?,?,?,?,?,?,?)
 
 # 3. 컴파일 훈련
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
@@ -78,13 +71,14 @@ cp = ModelCheckpoint(filepath=modelpath, monitor='val_loss',
 # 세이브 된 최적 가중치를 이용해서 모델 평가, 예측을 좀 더 쉽고 빠르게 할 수 있다
 model.compile(loss='categorical_crossentropy', optimizer='adam', 
               metrics=['accuracy'])
-hist = model.fit(x_train, y_train, epochs=10, validation_split=0.2, callbacks=[es, cp], batch_size=1000)
+hist = model.fit(x_train, y_train, epochs=10, validation_split=0.2, callbacks=[es, cp], batch_size=8)
+
+# model.save('../data/h5/k51_1_model2.h5')
 
 # 4. 평가, 예측
 result = model.evaluate(x_test, y_test)
 print("loss : ", result[0]) # 리스트의 첫번째 값은 loss
 print("accuracy : ", result[1])  # 리스트이 두번째 값은 acc
-
 
 # 시각화
 import matplotlib.pyplot as plt
@@ -120,4 +114,8 @@ plt.show()
 # keras ModelCheckPoing_mnist
 # loss :  0.06158018112182617
 # accuracy :  0.9879999756813049
+
+# keras51_1_save_model1
+# loss :  0.1437511146068573
+# accuracy :  0.9678000211715698
 

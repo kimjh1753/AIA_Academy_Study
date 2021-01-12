@@ -59,7 +59,7 @@ model.compile(loss='binary_crossentropy', optimizer='adam',
 
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 early_stopping = EarlyStopping(monitor='loss', patience=30, mode='auto') 
-modelpath = './modelCheckPoint/k46_MC_6_cancer_{epoch:02d}-{val_loss:.4f}.hdf5'
+modelpath = '../data/modelcheckpoint/k46_MC_6_cancer_{epoch:02d}-{val_loss:.4f}.hdf5'
 cp = ModelCheckpoint(filepath=modelpath, monitor='val_loss', save_best_only=True, mode='auto')
 hist = model.fit(x_train, y_train, epochs=2000, validation_data=(x_val, y_val), 
                callbacks=[early_stopping, cp], verbose=1)

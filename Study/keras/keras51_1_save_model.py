@@ -56,28 +56,22 @@ model.add(Dense(1000, activation='relu'))
 model.add(Dropout(0.2))
 model.add(Dense(10, activation='softmax'))
 
-model.summary()
-
-# 실습!! 완성하시오!!!
-# 지표는 acc   /// 0.985 이상
-
-# 응용
-# y_test 10개와 y_pred 10개를 출력하시오
-
-# y_test[:10] = (?,?,?,?,?,?,?,?,?,?,?)
-# y_pred[:10] = (?,?,?,?,?,?,?,?,?,?,?)
+model.save('../data/h5/k51_1_model1.h5')
 
 # 3. 컴파일 훈련
-from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard
+from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 es = EarlyStopping(monitor='val_loss', patience=30, mode='auto')
 modelpath = '../data/modelcheckpoint/k45_mnist_{epoch:02d}-{val_loss:.4f}.hdf5'
+# 02d = 정수 두 번째 자릿수까지 표기, .4f = 소수점 네 번째 자릿수까지 표기
 cp = ModelCheckpoint(filepath=modelpath, monitor='val_loss', 
                      save_best_only=True, mode='auto')
-tb = TensorBoard(log_dir='./graph', histogram_freq=0,                               
-                 write_graph=True, write_images=True)
+# filepath - 가중치 세이브, 최저점을 찍을 때마다 weight 가 들어간 파일을 만듬
+# 세이브 된 최적 가중치를 이용해서 모델 평가, 예측을 좀 더 쉽고 빠르게 할 수 있다
 model.compile(loss='categorical_crossentropy', optimizer='adam', 
               metrics=['accuracy'])
-hist = model.fit(x_train, y_train, epochs=100, validation_split=0.2, callbacks=[es, cp, tb], batch_size=1000)
+hist = model.fit(x_train, y_train, epochs=10, validation_split=0.2, callbacks=[es, cp], batch_size=8)
+
+model.save('../data/h5/k51_1_model2.h5')
 
 # 4. 평가, 예측
 result = model.evaluate(x_test, y_test)
@@ -87,43 +81,40 @@ print("accuracy : ", result[1])  # 리스트이 두번째 값은 acc
 
 # 시각화
 import matplotlib.pyplot as plt
+import matplotlib.font_manager as fm
 
-plt.figure(figsize=(10, 6)) # 단위 알아서 찾을 것!
+font_path = 'C:\\Users\\ai\\NanumFontSetup_TTF_GOTHIC\\NanumGothic.ttf'
+fontprop = fm.FontProperties(fname=font_path, size=18)
+
+plt.figure(figsize=(10, 6)) # (10, 6) 의 면적을 잡음
 
 plt.subplot(2, 1, 1)    # 2행 1열중 첫번째
 plt.plot(hist.history['loss'], marker='.', c='red', label='loss')
 plt.plot(hist.history['val_loss'], marker='.', c='blue', label='val_loss')
 plt.grid()
 
-# plt.title('Cost loss')    # 한글깨짐 오류 해결할 것 과제1.
+plt.title('손실비용', fontproperties=fontprop)    # 한글깨짐 오류 해결할 것 과제1.
 plt.ylabel('loss')
 plt.xlabel('epoch')
 plt.legend(loc='upper right')
 
 plt.subplot(2, 1, 2)    # 2행 2열중 두번째
-plt.plot(hist.history['accuracy'], marker='.', c='red', label='accuracy')
-plt.plot(hist.history['val_accuracy'], marker='.', c='blue', label='val_accuracy')
+plt.plot(hist.history['accuracy'], marker='.', c='red')
+plt.plot(hist.history['val_accuracy'], marker='.', c='blue')
 plt.grid()
 
-# plt.title('정확도')
+plt.title('정확도', fontproperties=fontprop)
 plt.ylabel('accuracy')
 plt.xlabel('epoch')
-plt.legend(loc='upper right')
+plt.legend(['accuracy', 'val_accuracy'])
 
 plt.show()
 
-# keras tensorboard mnist
+# keras ModelCheckPoing_mnist
 # loss :  0.06158018112182617
 # accuracy :  0.9879999756813049
 
-# 2. TensorBoard log_dir, histogram_freq, write_graph, write_images 알아보기
+# keras51_1_save_model
+# loss :  0.1234571561217308
+# accuracy :  0.9739999771118164
 
-# log_dir -> 로그 파일을 저장할 디렉토리의 경로이다.
-
-# histogram_freq : 모델의 계층에 대한 활성화 및 가중치 히스토그램을 계산할 빈도이다.(epoch 단위)
-# 	         단, 0으로 설정할시 히스토그램 계산 X
-
-# write_graph : TensorBoard에서 그래프를 시각화를 결정함. 
-# 	      단, True로 설정할 시 로그 파일 커질 수 있음.
-
-# write_images : TensorBoard에서 이미지로 시각화하기 위해 모델 가중치를 사용할 지 결정하는 것  

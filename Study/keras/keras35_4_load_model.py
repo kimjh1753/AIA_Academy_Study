@@ -42,7 +42,7 @@ x = x.reshape(6, 4, 1)
 
 # 2. 모델 구성
 from tensorflow.keras.models import load_model
-model = load_model('./model/save_keras35.h5')
+model = load_model('../data/h5/save_keras35.h5')
 # 요 밑 3줄 넣고 테스트 ##########
 from tensorflow.keras.layers import Dense
 model.add(Dense(5, name='kingkeras1'))   # 이름 : dense

@@ -57,7 +57,7 @@ model.compile(loss='mse', optimizer='adam', metrics=['accuracy'])
 
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 early_stopping = EarlyStopping(monitor='loss', patience=30, mode='auto')
-modelpath = './modelCheckPoint/k46_MC_8_wine_{epoch:02d}-{val_loss:.4f}.hdf5'
+modelpath = '../data/modelcheckpoint/k46_MC_8_wine_{epoch:02d}-{val_loss:.4f}.hdf5'
 cp = ModelCheckpoint(filepath=modelpath, monitor="val_loss", save_best_only=True, mode='auto')
 hist = model.fit(x_train, y_train, epochs=2000, validation_split=0.2, 
           verbose=1, batch_size=13, callbacks=[early_stopping, cp])
