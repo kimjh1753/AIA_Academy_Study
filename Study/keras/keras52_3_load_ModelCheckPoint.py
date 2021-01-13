@@ -93,7 +93,7 @@ from tensorflow.keras.layers import Conv2D, MaxPooling2D, Dense, Flatten, Dropou
 # 로드모델_loss :  0.0449136346578598
 # 로드모델_accuracy :  0.9848999977111816
 
-model = load_model('../data/modelcheckpoint/k52_1_mnist_checkpoint_min.hdf5')
+model = load_model('../data/modelcheckpoint/k52_1_mnist_09-0.0512.hdf5')
 result = model.evaluate(x_test, y_test)
 print("로드체크포인트_loss : ", result[0])
 print("로드체크포인트_accuracy : ", result[1])

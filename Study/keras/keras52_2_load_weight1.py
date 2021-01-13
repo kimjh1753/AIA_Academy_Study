@@ -82,21 +82,20 @@ model.compile(loss='categorical_crossentropy',optimizer='adam',metrics=['accurac
 # model1_accuracy :  0.9837999939918518
 
 # model2 : 
-model.load_weights('../data/h5/k52_1_weight.h5')
-
 # 4-2 Evaluate, Predict
+model.load_weights('../data/h5/k52_1_weight.h5')
 result = model.evaluate(x_test, y_test, batch_size=32)
 print("가중치_loss : ", result[0])
 print("가중치_accuracy : ", result[1])
 
-# 가중치_loss :  0.050545744597911835
-# 가중치_accuracy :  0.9828000068664551
+# 가중치_loss :  0.05136147886514664
+# 가중치_accuracy :  0.9843000173568726
 
 model2 = load_model('../data/h5/k52_1_model2.h5')
 result2 = model.evaluate(x_test, y_test, batch_size=32)
 print("로드모델_loss : ", result2[0])
 print("로드모델_accuracy : ", result2[1])
 
-# 로드모델_loss :  0.050545744597911835
-# 로드모델_accuracy :  0.9828000068664551
+# 로드모델_loss :  0.05136147886514664
+# 로드모델_accuracy :  0.9843000173568726
 

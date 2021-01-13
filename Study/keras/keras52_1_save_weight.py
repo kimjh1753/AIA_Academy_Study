@@ -70,5 +70,5 @@ print("loss : ", result[0]) # 리스트의 첫번째 값은 loss
 print("accuracy : ", result[1])  # 리스트이 두번째 값은 acc
 
 # keras52_1_save_weight
-# loss :  0.050545744597911835
-# accuracy :  0.9828000068664551
+# loss :  0.05136147886514664
+# accuracy :  0.9843000173568726

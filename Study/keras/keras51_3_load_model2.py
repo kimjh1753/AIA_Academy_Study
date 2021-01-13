@@ -116,6 +116,6 @@ print("accuracy : ", result[1])  # 리스트이 두번째 값은 acc
 # accuracy :  0.9879999756813049
 
 # keras51_1_save_model1
-# loss :  0.1437511146068573
-# accuracy :  0.9678000211715698
+# loss :  0.1234571561217308
+# accuracy :  0.9739999771118164
 
