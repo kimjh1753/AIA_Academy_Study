@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-df = pd.read_csv('../data/csv/삼성전자.csv', encoding = 'CP949', index_col=0, header=0)
+df = pd.read_csv('../study/samsung/삼성전자.csv', encoding = 'CP949', index_col=0, header=0)
 print(df)
 
 df = df.fillna(method='pad')    # 각각의 결측치 바로 앞에 있는 value를 채워넣는 방식
