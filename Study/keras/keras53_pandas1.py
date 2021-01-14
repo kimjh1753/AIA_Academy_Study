@@ -22,14 +22,51 @@ print(type(x), type(y)) # <class 'numpy.ndarray'> <class 'numpy.ndarray'>
 # df = pd.DataFrame(x, columns=dataset.feature_names)
 df = pd.DataFrame(x, columns=dataset['feature_names'])
 print(df)
+'''
+     sepal length (cm)  sepal width (cm)  petal length (cm)  petal width (cm)   <- 헤더, 컬럼명
+0                  5.1               3.5                1.4               0.2
+1                  4.9               3.0                1.4               0.2
+2                  4.7               3.2                1.3               0.2
+3                  4.6               3.1                1.5               0.2
+4                  5.0               3.6                1.4               0.2
+..                 ...               ...                ...               ...
+145                6.7               3.0                5.2               2.3
+146                6.3               2.5                5.0               1.9
+147                6.5               3.0                5.2               2.0
+148                6.2               3.4                5.4               2.3
+149                5.9               3.0                5.1               1.8
+^
+|
+인덱스
+[150 rows x 4 columns]
+'''
 print(df.shape) # (150, 4)
 print(df.columns) # Index(['sepal length (cm)', 'sepal width (cm)', 'petal length (cm)',
                          # 'petal width (cm)'], dtype='object')
 print(df.index) # RangeIndex(start=0, stop=150, step=1) -> 명시 안해주면 자동으로 인덱싱해준다.
 
 print(df.head()) # df[:5]
+'''
+df([:5])
+   sepal length (cm)  sepal width (cm)  petal length (cm)  petal width (cm)
+0                5.1               3.5                1.4               0.2
+1                4.9               3.0                1.4               0.2
+2                4.7               3.2                1.3               0.2
+3                4.6               3.1                1.5               0.2
+4                5.0               3.6                1.4               0.2
+'''
 print(df.tail()) # df[-5:]
+'''
+df([-5:])
+     sepal length (cm)  sepal width (cm)  petal length (cm)  petal width (cm)
+145                6.7               3.0                5.2               2.3
+146                6.3               2.5                5.0               1.9
+147                6.5               3.0                5.2               2.0
+148                6.2               3.4                5.4               2.3
+149                5.9               3.0                5.1               1.8
+'''
 print(df.info())
+
 # <class 'pandas.core.frame.DataFrame'>
 # RangeIndex: 150 entries, 0 to 149
 # Data columns (total 4 columns):
@@ -42,9 +79,10 @@ print(df.info())
 # dtypes: float64(4)
 # memory usage: 4.8 KB
 # None
+
 print(df.describe())
 #        sepal length (cm)  sepal width (cm)  petal length (cm)  petal width (cm)
-# count         150.000000        150.000000         150.000000        150.000000
+# count         150.000000        150.000000         150.000000        150.000000   
 # mean            5.843333          3.057333           3.758000          1.199333
 # std             0.828066          0.435866           1.765298          0.762238
 # min             4.300000          2.000000           1.000000          0.100000
@@ -54,33 +92,89 @@ print(df.describe())
 # max             7.900000          4.400000           6.900000          2.500000
 
 df.columns = ['sepal_length', 'sepal_width', 'petal_length', 'petal_width']
-print(df.columns)
-print(df.info())
+print(df.columns) # Index(['sepal_length', 'sepal_width', 'petal_length', 'petal_width'], dtype='object')
+print(df.info())  # # 수정된 컬럼명이 반영된다.
 print(df.describe())
 
 # y칼럼을 추가해 보아요
 print(df['sepal_length'])
-df['Target'] = dataset.target
+df['Target'] = dataset.target # 데이터들을 df의 'Target' 칼럼에 넣는다.
 print(df.head())
 
-print(df.shape) # (150, 5)
+print(df.shape) # (150,) 
 print(df.columns) # Index(['sepal_length', 'sepal_width', 'petal_length', 'petal_width', 'Target'], dtype='object')
 print(df.index)
 print(df.tail())
 
 print(df.info())
-print(df.isnull())
-print(df.isnull().sum())
+print(df.isnull()) # 비어 있는 데이터가 있는지
+'''
+     sepal_length  sepal_width  petal_length  petal_width  Target
+0           False        False         False        False   False
+1           False        False         False        False   False
+2           False        False         False        False   False
+3           False        False         False        False   False
+4           False        False         False        False   False
+..            ...          ...           ...          ...     ...
+145         False        False         False        False   False
+146         False        False         False        False   False
+147         False        False         False        False   False
+148         False        False         False        False   False
+149         False        False         False        False   False
+[150 rows x 5 columns]
+'''
+print(df.isnull().sum()) # 비어 있는 데이터 개수
+
+'''
+[150 rows x 5 columns]
+sepal_length    0
+sepal_width     0
+petal_length    0
+petal_width     0
+Target          0
+dtype: int64
+'''
 print(df.describe())
-print(df['Target'].value_counts())
+'''
+       sepal_length  sepal_width  petal_length  petal_width      Target
+count    150.000000   150.000000    150.000000   150.000000  150.000000
+mean       5.843333     3.057333      3.758000     1.199333    1.000000
+std        0.828066     0.435866      1.765298     0.762238    0.819232
+min        4.300000     2.000000      1.000000     0.100000    0.000000
+25%        5.100000     2.800000      1.600000     0.300000    0.000000
+50%        5.800000     3.000000      4.350000     1.300000    1.000000
+75%        6.400000     3.300000      5.100000     1.800000    2.000000
+max        7.900000     4.400000      6.900000     2.500000    2.000000
+'''
 
-# 상관계수, 히트맵
+print(df['Target'].value_counts()) # y값 개수
+'''
+2    50
+1    50
+0    50
+'''
+# 상관계수, 히트맵 : Target에 가장 많이 연관성이 있는 피쳐가 무엇인가
+print(df.corr()) 
 print(df.corr())
-
+'''
+              sepal_length  sepal_width  petal_length  petal_width    Target
+sepal_length      1.000000    -0.117570      0.871754     0.817941  0.782561
+sepal_width      -0.117570     1.000000     -0.428440    -0.366126 -0.426658 *   <- 상관계수가 낮다. (상관관계가 약하다.)
+petal_length      0.871754    -0.428440      1.000000     0.962865  0.949035
+petal_width       0.817941    -0.366126      0.962865     1.000000  0.956547 *   <- 가장 상관계수가 높다. (상관관계 있다.)
+Target            0.782561    -0.426658      0.949035     0.956547  1.000000
+* 참고 : 상관관계가 낮은 데이터를 제거하면 더 좋은 결과가 나올 수도 있다.
+'''
+# 시각화1  : 상관계수 히트맵
 import matplotlib.pyplot as plt
 import seaborn as sns
 # sns.set(font_scale=1.2)
 # sns.heatmap(data=df.corr(), square=True, annot=True, cbar=True)
+    # heatmap : 사각형 형태로 만들겠다.
+    # 데이터 : df.corr()
+    # square=True : 사각형 형태로 표현
+    # annot=True : 글씨를 넣겠다.
+    # cbar=True : 옆에 있는 바를 넣겠다.
 # plt.show()
 
 # 도수 분포도
@@ -103,3 +197,4 @@ plt.hist(x = 'petal_width', data = df)
 plt.title('petal_width')
 
 plt.show()
+'''
