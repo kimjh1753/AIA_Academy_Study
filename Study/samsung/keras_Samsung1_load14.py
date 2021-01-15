@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import datetime
 
-data = np.load('../study/samsung/삼성전자.npy')
+data = np.load('../study/samsung/삼성전자0114.npy')
 
 x = data[:662, [0,1,2,3,4]]   # (662, 5)
 y = data[:662, [3]]   # (662, 1)
@@ -79,7 +79,7 @@ from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 early_stopping = EarlyStopping(monitor='val_loss', patience=30, mode='auto')
 hist = model.fit(x_train, y_train, epochs=3000, batch_size=100, callbacks=[early_stopping], validation_data=(x_val, y_val))
 
-model.save('../study/samsung/keras_Samsung.h5')
+model.save('../study/samsung/keras_Samsung0114.h5')
 
 # 4. 평가, 예측
 result = model.evaluate(x_test, y_test, batch_size=8)
@@ -110,3 +110,7 @@ plt.show()
 # loss :  867865.5625
 # mae :  864.7241821289062
 # [[90246.5]]
+
+
+
+

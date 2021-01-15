@@ -169,7 +169,7 @@ Target            0.782561    -0.426658      0.949035     0.956547  1.000000
 import matplotlib.pyplot as plt
 import seaborn as sns
 sns.set(font_scale=1.2)
-# sns.heatmap(data=df.corr(), square=True, annot=True, cbar=True)
+sns.heatmap(data=df.corr(), square=True, annot=True, cbar=True)
     # heatmap : 사각형 형태로 만들겠다.
     # 데이터 : df.corr()
     # square=True : 사각형 형태로 표현

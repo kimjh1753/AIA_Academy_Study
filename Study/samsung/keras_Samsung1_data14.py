@@ -17,9 +17,9 @@ df1 = df1.rename(columns={'Unnamed: 6': '하락률'})
 df1.drop(['전일비', '하락률'], axis=1, inplace=True)
 print(df1)
 df1 = df1.dropna(axis=0)
-print(df1.info())
-# df1 = df1.astype('float32')
 # print(df1.info())
+df1 = df1.astype('float32')
+print(df1.info())
 
 data = pd.concat([df1, df])
 print(data)
@@ -30,9 +30,5 @@ print(data.shape) # (2401, 14)
 # print(type(data)) # <class 'numpy.ndarray'>
 # print(data.shape) # (2399, 14)
 
-np.save("../study/samsung/삼성전자.npy", arr=data)
-
-
-
-
+np.save("../study/samsung/삼성전자0114.npy", arr=data)
 
