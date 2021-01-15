@@ -168,32 +168,35 @@ Target            0.782561    -0.426658      0.949035     0.956547  1.000000
 # 시각화1  : 상관계수 히트맵
 import matplotlib.pyplot as plt
 import seaborn as sns
-sns.set(font_scale=1.2)
-sns.heatmap(data=df.corr(), square=True, annot=True, cbar=True)
+# sns.set(font_scale=1.2)
+# sns.heatmap(data=df.corr(), square=True, annot=True, cbar=True)
     # heatmap : 사각형 형태로 만들겠다.
     # 데이터 : df.corr()
     # square=True : 사각형 형태로 표현
     # annot=True : 글씨를 넣겠다.
     # cbar=True : 옆에 있는 바를 넣겠다.
-plt.show()
-
-# 도수 분포도
-# plt.figure(figsize=(10, 6))
-
-# plt.subplot(2, 2, 1)
-# plt.hist(x = 'sepal_length', data = df)
-# plt.title('sepal_length')
-
-# plt.subplot(2, 2, 2)
-# plt.hist(x = 'sepal_width', data = df)
-# plt.title('sepal_width')
-
-# plt.subplot(2, 2, 3)
-# plt.hist(x = 'petal_length', data = df)
-# plt.title('petal_length')
-
-# plt.subplot(2, 2, 4)
-# plt.hist(x = 'petal_width', data = df)
-# plt.title('petal_width')
-
 # plt.show()
+
+# 시각화2 : 도수 분포도('hist'ogram)
+# 각 피처마다 데이터의 분포를 보여준다.
+plt.figure(figsize=(10, 6))
+
+plt.subplot(2, 2, 1) # 2행 2열 그림 중에서 첫 번째
+plt.hist(x = 'sepal_length', data = df) # df에 있는 sepal_length를 x값으로 잡는다.
+plt.title('sepal_length')
+
+plt.subplot(2, 2, 2)
+plt.hist(x = 'sepal_width', data = df)
+plt.title('sepal_width')
+
+plt.subplot(2, 2, 3)
+plt.hist(x = 'petal_length', data = df)
+plt.title('petal_length')
+
+plt.subplot(2, 2, 4)
+plt.hist(x = 'petal_width', data = df)
+plt.title('petal_width')
+
+plt.show()
+# x : min, max값을 기준으로 수치를 잡는다.
+# y : 데이터 개수

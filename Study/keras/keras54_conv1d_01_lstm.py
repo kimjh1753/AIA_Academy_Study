@@ -45,7 +45,7 @@ model.add(Dense(100))
 model.add(Dropout(0.2))
 model.add(Dense(1))
 
-model.summary()
+# model.summary()
 
 # 3. 컴파일, 훈련
 model.compile(loss='mse', optimizer='adam', metrics=['mae'])

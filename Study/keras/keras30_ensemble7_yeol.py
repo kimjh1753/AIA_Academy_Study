@@ -1,4 +1,4 @@
-# 행이 다른 앙상블 모델에 대해 공부!!!
+# 열이 다른 앙상블 모델에 대해 공부!!!
 
 import numpy as np
 from numpy import array

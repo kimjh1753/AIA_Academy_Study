@@ -8,8 +8,10 @@ y2 = np.array([range(501, 601), range(711, 811), range(100)])
 
 x1 = np.transpose(x1)
 x2 = np.transpose(x2)
+print(x1.shape, x2.shape)
 y1 = np.transpose(y1)
 y2 = np.transpose(y2)
+print(y1.shape, y2.shape)
 
 from sklearn.model_selection import train_test_split
 x1_train, x1_test, y1_train, y1_test = train_test_split(
@@ -106,4 +108,3 @@ r2 = (r2_1 + r2_2) / 2
 print("R2_1 : ", r2_1)
 print("R2_2 : ", r2_2)
 print("R2 : ", r2)
-

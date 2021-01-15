@@ -8,10 +8,16 @@ y1 = np.array([range(711, 811), range(1,101), range(201, 301)])
 x2 = np.array([range(101, 201), range(411, 511), range(100, 200)])
 y2 = np.array([range(501, 601), range(711, 811), range(100)])
 
+print(x1.shape, x2.shape)   # (3, 100) (3, 100)
+print(y1.shape, y2.shape)   # (3, 100) (3, 100)  
+
 x1 = np.transpose(x1)
 x2 = np.transpose(x2)
 y1 = np.transpose(y1)
 y2 = np.transpose(y2)
+
+print(x1.shape, x2.shape)   # (100, 3) (100, 3)
+print(y1.shape, y2.shape)   # (100, 3) (100, 3)  
 
 from sklearn.model_selection import train_test_split
 x1_train, x1_test, y1_train, y1_test = train_test_split(
