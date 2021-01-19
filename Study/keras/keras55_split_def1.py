@@ -1,26 +1,6 @@
 import numpy as np
 dataset = np.array([1,2,3,4,5,6,7,8,9,10])
 
-# def split_xy2(dataset, time_steps, y_columns):
-#     x, y = list(), list()
-#     for i in range(len(dataset)):
-#         x_end_number = i + time_steps
-#         y_end_number = x_end_number + y_columns
-#         if y_end_number > len(dataset):
-#             break
-#         tmp_x = dataset[i : x_end_number]
-#         tmp_y = dataset[x_end_number : y_end_number]
-#         x.append(tmp_x)
-#         y.append(tmp_y)
-#     return np.array(x), np.array(y)
-
-# time_steps = 4
-# y_columns = 2
-# x2, y2 = split_xy2(dataset, time_steps, y_columns)
-# print(x2, "\n", y2)
-# print("x2.shape : ", x2.shape)
-# print("y2.shape : ", y2.shape)
-
 def split_xy2(dataset, x_len, y_len):
     x, y = list(), list()
     for i in range(len(dataset)):
