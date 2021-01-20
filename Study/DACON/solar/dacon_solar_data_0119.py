@@ -11,7 +11,7 @@ print(df)
 print(df.info())
 print(df.columns) # Index(['Hour', 'Minute', 'DHI', 'DNI', 'WS', 'RH', 'T', 'TARGET'], dtype='object')
 
-dataset = df.to_numpy()
+dataset = df.to_numpy().astype(int)
 print(dataset)
 print(type(dataset)) # <class 'numpy.ndarray'>
 print(dataset.shape) # (52560, 9)
@@ -20,10 +20,10 @@ print(df1)
 print(df1.info())
 print(df1.columns) # Index(['Hour', 'Minute', 'DHI', 'DNI', 'WS', 'RH', 'T', 'TARGET'], dtype='object')
 
-dataset1 = df1.to_numpy()
+dataset1 = df1.to_numpy().astype(int)
 print(dataset1)
 print(type(dataset1))
-print(dataset.shape) # (27216, 9)
+print(dataset1.shape) # (27216, 9)
 
 x_pred = dataset1
 print(x_pred.shape) # (27216, 9)
@@ -51,6 +51,7 @@ print(y)
 print("x.shape : ", x.shape) # x.shape :  (52129, 336, 9)
 print("y.shape : ", y.shape) # y.shape :  (52129, 96, 9)
 
+
 from sklearn.model_selection import train_test_split
 x_train, x_test, y_train, y_test = train_test_split(
     x, y, train_size = 0.8, shuffle=False
@@ -68,7 +69,6 @@ x_pred = x_pred.reshape(81, 336, 9)
 print(x_pred)
 print(x_pred.shape) # (81, 336, 9)
 
-
 # 2. 모델 구성
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Conv1D, Dropout, Flatten, Reshape
@@ -76,8 +76,17 @@ model = Sequential()
 model.add(Conv1D(filters=256, kernel_size=2, padding='same', input_shape=(336, 9)))
 model.add(Conv1D(filters=256, kernel_size=2, padding='same'))
 model.add(Conv1D(filters=256, kernel_size=2, padding='same'))
+model.add(Dropout(0.2))
+
 model.add(Conv1D(filters=256, kernel_size=2, padding='same'))
+model.add(Conv1D(filters=256, kernel_size=2, padding='same'))
+model.add(Dropout(0.2))
+
+model.add(Conv1D(filters=256, kernel_size=2, padding='same'))
+model.add(Conv1D(filters=256, kernel_size=2, padding='same'))
+model.add(Dropout(0.2))
 model.add(Flatten())
+
 model.add(Dense(128, activation='relu'))
 model.add(Dense(128, activation='relu'))
 model.add(Dense(128, activation='relu'))
@@ -91,13 +100,16 @@ model.summary()
 # 3. 컴파일, 훈련
 model.compile(loss='mse', optimizer='adam', metrics=['mae'])
 
-from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
+from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
 modelpath = '../data/modelcheckpoint/dacon_solar_01_{epoch:02d}-{val_loss:.4f}.hdf5'
 # 02d = 정수 두 번째 자릿수까지 표기, .4f = 소수점 네 번째 자릿수까지 표기
+
+early_stopping = EarlyStopping(monitor='val_loss', patience=20, mode='auto')
 cp = ModelCheckpoint(filepath=modelpath, monitor='val_loss', save_best_only=True, mode='auto')
-early_stopping = EarlyStopping(monitor='val_loss', patience=30, mode='auto')
-hist = model.fit(x_train, y_train, epochs=1, batch_size=1000, 
-                 callbacks=[early_stopping], validation_data=(x_val, y_val))
+reduce_lr = ReduceLROnPlateau(monitor='val_loss', patience=10, factor=0.5, verbose=1)
+
+hist = model.fit(x_train, y_train, epochs=5, batch_size=100, 
+                 callbacks=[early_stopping, cp, reduce_lr], validation_data=(x_val, y_val))
 
 model.save('./DACON/data/train/dacon_Solar0118.h5')
 
@@ -106,35 +118,20 @@ result = model.evaluate(x_test, y_test)
 print("loss : ", result[0])
 print("mae : ", result[1])
 
-# y_predict = model.predict(x_test)
-
-# # RMSE 구하기
-# from sklearn.metrics import mean_squared_error
-# def RMSE(y_test, y_predict):
-#     return np.sqrt(mean_squared_error(y_test, y_predict))
-# print("RMSE : ", RMSE(y_test, y_predict))
-# print("mse : ", mean_squared_error(y_test, y_predict))
-
-# # R2
-# from sklearn.metrics import r2_score
-# r2 = r2_score(y_test, y_predict)
-# print("R2 : ", r2)
-
 predict = model.predict(x_pred)
-print(predict)
-print(predict.shape) # (81, 96, 9)
+# print(predict)
+# print(predict.shape) # (81, 96, 9)
 
 predict = predict.reshape(predict.shape[0]*predict.shape[1], 9)
-print(predict)
-print(predict.shape) # (7776, 9)
+# print(predict)
+# print(predict.shape) # (7776, 9)
 
-print(type(predict))
+# print(type(predict))
 dataframe = pd.DataFrame(predict)
-print(dataframe)
-# dataframe.columns = pd.read_csv("./DACON/data/sample_submission.csv", index_col=0, header=0).columns
-# dataframe.index = pd.read_csv("./DACON/data/sample_submission.csv", index_col=0, header=0).index
-dataframe.to_csv("./DACON/data/sample_submission.csv", sep=',', index = False, header = False)
-'''
+# print(dataframe)
+
+dataframe.to_csv("../STUDY/DACON/data/sample_submission.csv", sep=',', index = False, header = False)
+
 # 시각화
 plt.rc('font', family='Malgun Gothic')
 plt.plot(hist.history['loss'])
@@ -144,5 +141,5 @@ plt.ylabel('loss')
 plt.xlabel('epochs')
 plt.legend(['train_loss','val_loss'])
 plt.show()
-'''
+
 
