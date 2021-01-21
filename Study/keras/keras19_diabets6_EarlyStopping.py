@@ -66,16 +66,16 @@ x_train, x_val, y_train, y_val = train_test_split(
         x_train, y_train, train_size=0.8, shuffle=True, random_state=66
 )
 
-from sklearn.preprocessing import MinMaxScaler
-scaler = MinMaxScaler()
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
+# scaler = MinMaxScaler()
+scaler = StandardScaler()
 scaler.fit(x_train)
 x_train = scaler.transform(x_train)
 x_test = scaler.transform(x_test)
 x_val = scaler.transform(x_val)
 
-print(np.max(x), np.min(x)) # 최댓값 711.0, 최솟값 0.0      ----> 최댓값 1.0 , 최솟값 0.0
-print(np.max(x[0]))         # max = 0.9999999999999999     -----> 컬럼마다 최솟값과 최댓값을 적용해서 구해준다.
-
+# print(np.max(x), np.min(x)) # 최댓값 711.0, 최솟값 0.0      ----> 최댓값 1.0 , 최솟값 0.0
+# print(np.max(x[0]))         # max = 0.9999999999999999     -----> 컬럼마다 최솟값과 최댓값을 적용해서 구해준다.
 
 # print(x_train.shape)    #(353, 10)
 # print(x_test.shape)     #(89, 10)
@@ -143,5 +143,13 @@ print("R2 : ", r2)
 # R2 :  0.2540742455969379
 
 # EarlyStopping
+# loss, mse :  6208.60400390625 59.734039306640625
+# RMSE :  78.79470012934092
+# mse :  6208.604768472759
+# R2 :  0.04336423399040079
 
-
+# Standard Scaler
+# loss, mse :  5781.22802734375 59.84791564941406
+# RMSE :  76.03439072235057
+# mse :  5781.2285725190695
+# R2 :  0.10921531806431861

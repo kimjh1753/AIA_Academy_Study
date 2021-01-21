@@ -19,8 +19,9 @@ print("x_pred : ", x_pred.shape) # (3,)
 
 x_pred = x_pred.reshape(1, 3)
 
-from sklearn.preprocessing import MinMaxScaler
-scaler = MinMaxScaler()
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
+# scaler = MinMaxScaler()
+scaler = StandardScaler()
 scaler.fit(x)
 x = scaler.transform(x)
 x_pred = scaler.transform(x_pred)
@@ -68,3 +69,7 @@ print("result : ", result)
 # conv1d_01_lstm
 # loss :  [4.564180374145508, 1.48143470287323]
 # result :  [[84.7642]]
+
+# StandardScaler
+# loss :  [11.66964340209961, 1.9976978302001953]
+# result :  [[77.443634]]

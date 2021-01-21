@@ -62,7 +62,6 @@ x_test = scaler.transform(x_test)
 print(np.max(x), np.min(x)) # 최댓값 711.0, 최솟값 0.0      ----> 최댓값 1.0 , 최솟값 0.0
 print(np.max(x[0]))         # max = 0.9999999999999999     ----> 컬럼마다 최솟값과 최댓값을 적용해서 구해준다.
 
-
 #2. Modeling
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense

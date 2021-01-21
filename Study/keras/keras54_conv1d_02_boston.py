@@ -21,8 +21,9 @@ x_train, x_test, y_train, y_test = train_test_split(
         x, y, train_size=0.8, random_state=66, shuffle=True
 )
 
-from sklearn.preprocessing import MinMaxScaler
-scaler = MinMaxScaler()
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
+# scaler = MinMaxScaler()
+scaler = StandardScaler()
 scaler.fit(x)
 x_train = scaler.transform(x_train)
 x_test = scaler.transform(x_test)
@@ -87,3 +88,9 @@ print("R2 : ", r2)
 # RMSE :  3.583713820929997
 # mse :  12.843004750324676
 # R2 :  0.8463441802799729
+
+# StandardScaler
+# loss:  10.551183700561523
+# RMSE :  3.2482583787704487
+# mse :  10.551182495252425
+# R2 :  0.873763918425505

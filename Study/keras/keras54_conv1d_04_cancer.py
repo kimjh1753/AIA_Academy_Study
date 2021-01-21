@@ -18,7 +18,7 @@ print(y)
 # 전처리 알아서 해 / MinMaxScaler, train_test_split
 print(np.max(x[0]))
 
-from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.model_selection import train_test_split
 x_train, x_test, y_train, y_test = train_test_split(
         x, y, train_size = 0.8, random_state = 66, shuffle = True
@@ -27,7 +27,8 @@ x_train, x_val, y_train, y_val = train_test_split(
         x, y, train_size = 0.8, random_state = 66, shuffle = True
 )
 
-scaler = MinMaxScaler()
+# scaler = MinMaxScaler()
+scaler = StandardScaler()
 scaler.fit(x_train)
 x_train = scaler.transform(x_train)
 x_test = scaler.transform(x_test)
@@ -86,6 +87,14 @@ print(y_test[-5:-1])
 # loss, acc :  0.8783406019210815 0.9649122953414917
 # [[1.0000000e+00]
 #  [2.5585153e-10]
+#  [1.0000000e+00]
+#  [1.0000000e+00]]
+# [1 0 1 1]
+
+# StandardScaler
+# loss, acc :  0.38658884167671204 0.9736841917037964
+# [[1.0000000e+00]
+#  [3.4202573e-33]
 #  [1.0000000e+00]
 #  [1.0000000e+00]]
 # [1 0 1 1]
