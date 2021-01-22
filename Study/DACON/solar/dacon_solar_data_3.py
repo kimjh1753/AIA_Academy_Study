@@ -174,6 +174,6 @@ for i in range(1,10):
     column_name = 'q_0.' + str(i)
     sub.loc[sub.id.str.contains("Day8"), column_name] = y_pred[:,1]
 
-sub.to_csv('../STUDY/DACON/data/submission_0120_1.csv', index=False)
+sub.to_csv('../STUDY/DACON/data/submission_data_3.csv', index=False)
 
 

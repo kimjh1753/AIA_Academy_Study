@@ -175,11 +175,11 @@ sub = pd.read_csv("../STUDY/DACON/data/sample_submission.csv")
 # 예측값을 제출 형식에 넣기 (예측한 값 9컬럼에 다 복붙함)
 for i in range(1,10):
     column_name = 'q_0.' + str(i)
-    sub.loc[sub.id.str.contains("Day7"), column_name] = y_pred[:,0]
+    sub.loc[sub.id.str.contains("Day7"), column_name] = y_pred[:, 0]
 for i in range(1,10):
     column_name = 'q_0.' + str(i)
-    sub.loc[sub.id.str.contains("Day8"), column_name] = y_pred[:,1]
+    sub.loc[sub.id.str.contains("Day8"), column_name] = y_pred[:, 1]
 
-sub.to_csv('../STUDY/DACON/data/submission_0120_2.csv', index=False)
+sub.to_csv('../STUDY/DACON/data/submission_data_4.csv', index=False)
 
 

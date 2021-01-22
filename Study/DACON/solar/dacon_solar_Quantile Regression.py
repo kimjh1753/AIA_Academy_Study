@@ -340,4 +340,4 @@ AR_Lstm_actual_pred_denorm = AR_Lstm_actual_pred*train_std['TARGET'] + train_mea
 AR_Lstm_actual_pred_nn = np.where(AR_Lstm_actual_pred_denorm<0, 0, AR_Lstm_actual_pred_denorm)
 
 sub.iloc[:,1:] = AR_Lstm_actual_pred_nn
-sub.to_csv('../study/DACON/data/sample_submission_0120_2.csv', index=False)
+sub.to_csv('../study/DACON/data/sample_submission_0120_3.csv', index=False)
