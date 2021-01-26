@@ -162,8 +162,8 @@ for q in q_lst :
     # 02d = 정수 두 번째 자릿수까지 표기, .4f = 소수점 네 번째 자릿수까지 표기
     early_stopping = EarlyStopping(monitor='val_loss', patience=4, mode='auto')
     # cp = ModelCheckpoint(filepath=modelpath, monitor='val_loss', save_best_only=True, mode='auto')
-    reduce_lr = ReduceLROnPlateau(monitor='val_loss', patience=2, factor=0.5, verbose=1)
-    hist = model.fit(x_train, y_train, epochs=10, batch_size=32, callbacks=[early_stopping, reduce_lr], validation_data=(x_val, y_val))
+    reduce_lr = ReduceLROnPlateau(monitor='val_loss', patience=2, factor=0.3, verbose=1)
+    hist = model.fit(x_train, y_train, epochs=2, batch_size=32, callbacks=[early_stopping, reduce_lr], validation_data=(x_val, y_val))
     
     # 4. 평가, 예측 
     result = model.evaluate(x_test, y_test, batch_size=32)

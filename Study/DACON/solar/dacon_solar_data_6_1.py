@@ -92,40 +92,37 @@ from tensorflow.keras.layers import Dense, Conv1D, Dropout, Flatten, Reshape
 def mymodel():
     model = Sequential()
     model.add(Conv1D(filters=256, kernel_size=2, padding='same', input_shape=(1, 7)))
-    model.add(Conv1D(filters=256, kernel_size=2, padding='same'))   
-    model.add(Conv1D(filters=256, kernel_size=2, padding='same'))
+    model.add(Conv1D(filters=256, kernel_size=2, padding='same', activation='relu'))   
+    model.add(Conv1D(filters=256, kernel_size=2, padding='same', activation='relu'))
     
-    model.add(Conv1D(filters=256, kernel_size=2, padding='same'))
-    model.add(Conv1D(filters=256, kernel_size=2, padding='same'))
+    model.add(Conv1D(filters=256, kernel_size=2, padding='same', activation='relu'))
+    model.add(Conv1D(filters=256, kernel_size=2, padding='same', activation='relu'))
     
-    model.add(Conv1D(filters=256, kernel_size=2, padding='same'))
-    model.add(Conv1D(filters=256, kernel_size=2, padding='same'))
-
-    model.add(Conv1D(filters=256, kernel_size=2, padding='same'))
-    model.add(Conv1D(filters=256, kernel_size=2, padding='same'))
+    model.add(Conv1D(filters=256, kernel_size=2, padding='same', activation='relu'))
+    model.add(Conv1D(filters=256, kernel_size=2, padding='same', activation='relu'))
     model.add(Flatten())
     
-    model.add(Dense(512, activation='relu'))
-    model.add(Dense(256, activation='relu'))
+    model.add(Dense(128, activation='relu'))
+    model.add(Dense(128, activation='relu'))
     model.add(Dense(128, activation='relu'))
     model.add(Dense(64, activation='relu'))
-    model.add(Dense(32, activation='relu'))
+    model.add(Dense(8, activation = 'relu'))
     model.add(Dense(1))
     return model
 
 # 3. 컴파일, 훈련
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
 # modelpath = '../data/modelcheckpoint/dacon_solar_01_{epoch:02d}-{val_loss:.4f}.hdf5'    # 02d = 정수 두 번째 자릿수까지 표기, .4f = 소수점 네 번째 자릿수까지 표기
-early_stopping = EarlyStopping(monitor='val_loss', patience=10, mode='auto')
+early_stopping = EarlyStopping(monitor='val_loss', patience=30, mode='auto')
 # cp = ModelCheckpoint(filepath=modelpath, monitor='val_loss', save_best_only=True, mode='auto')
-reduce_lr = ReduceLROnPlateau(monitor='val_loss', patience=5, factor=0.5, verbose=1)
+reduce_lr = ReduceLROnPlateau(monitor='val_loss', patience=10, factor=0.2, verbose=1, mode='auto', min_lr=0.001)
 
 def Final(a, x_train, y_train, x_val, y_val, x_test):
     x = []
     for q in q_lst:
         model = mymodel()
         model.compile(loss = lambda y_true, y_pred: quantile_loss(q, y_true, y_pred), optimizer='adam', metrics=[lambda y, pred: quantile_loss(q, y, pred)])
-        model.fit(x_train, y_train, epochs=100, batch_size=1000, callbacks=[early_stopping, reduce_lr], validation_data=(x_val, y_val))
+        model.fit(x_train, y_train, epochs=10000, batch_size=64, callbacks=[early_stopping, reduce_lr], validation_data=(x_val, y_val))
         pred = pd.DataFrame(model.predict(x_test).round(2))
         x.append(pred)
     df_temp = pd.concat(x, axis=1)

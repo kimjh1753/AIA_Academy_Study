@@ -12,12 +12,13 @@ warnings.filterwarnings("ignore")
 train = pd.read_csv('../study/dacon/data/train/train.csv')
 print(train.shape) # (52560, 9)
 print(train.tail())
-
 submission = pd.read_csv('../study/dacon/data/sample_submission.csv')
 print(submission.shape)
 submission.tail() # (7776, 10)
 
+#1. DATA
 
+# train data column 정리
 def Add_features(data):
     data['cos'] = np.cos(np.pi/2 - np.abs(data['Hour']%12 - 6)/6*np.pi/2)
     data.insert(1,'GHI',data['DNI']*data['cos']+data['DHI'])
@@ -99,12 +100,23 @@ def LGBM(q, x_train, y_train, x_val, y_val, x_test):
     # (a) Modeling
     model = LGBMRegressor(objective='quantile', alpha=q, max_depth=-1,
                           n_estimators=10000, bagging_fraction=0.7, learning_rate=0.01, subsample=0.7)
+    # objective = 'quantile' >> quantile 회귀모델
+    # n_estimators           >> (default=100) 훈련시킬 tree의 개수
+    # bagging_fraction       >> 0 ~ 1 사이, 랜덤 샘플링
+    # learning_rate          >> 일반적으로 0.01 ~ 0.1 사이
+    # subsample              >> Row sampling, 즉 데이터를 일부 발췌해서 다양성을 높이는 방법으로 쓴다.
+    # print("model : ", model)
+    # 출력결과 >> model :  LGBMRegressor(alpha=0.5, bagging_fraction=0.7, learning_rate=0.027,
+            #   n_estimators=10000, objective='quantile', subsample=0.7)
 
     model.fit(x_train, y_train, eval_metric=['quantile'],
               eval_set=[(x_val, y_val)], early_stopping_rounds=300, verbose=500)
+    # early_stopping_rounds  >> validation셋에 더이상 발전이 없으면 그만두게 설정할때 이를 몇번동안 발전이 없으면 그만두게 할지 여부.
 
     # (b) Predictions
     pred = pd.Series(model.predict(x_test).round(2))
+    # Series : 1차원 배열
+    # print(pred) : X_test로 predict한 결과가 나옴
     return pred, model
 
 # Target 예측

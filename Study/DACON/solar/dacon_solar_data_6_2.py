@@ -5,7 +5,6 @@ from tensorflow.keras.backend import mean, maximum
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
 
 train = pd.read_csv('../study/dacon/data/train/train.csv')
-sub = pd.read_csv('../study/dacon/data/sample_submission.csv')
 
 def Add_features(data):
     data['cos'] = np.cos(np.pi/2 - np.abs(data['Hour']%12 - 6)/6*np.pi/2)
@@ -114,8 +113,11 @@ from tensorflow.keras.backend import mean, maximum
 def quantile_loss(q, y, pred):
     err = (y - pred)
     return K.mean(K.maximum(q*err, (q-1)*err), axis=-1)
+# mean = 평균
+# K 를 tensorflow의 백앤드에서 불러왔는데 텐서형식의 mean을 쓰겠다는 것이다.
 
 q_lst = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+sub = pd.read_csv('../study/dacon/data/sample_submission.csv')
 
 # 2. 모델 구성
 from tensorflow.keras.models import Sequential
@@ -145,7 +147,7 @@ for q in q_lst:
     early_stopping = EarlyStopping(monitor='val_loss', patience=30, mode='auto')
     # cp = ModelCheckpoint(filepath=modelpath, monitor='val_loss', save_best_only=True, mode='auto')
     reduce_lr = ReduceLROnPlateau(monitor='val_loss', patience=10, factor=0.2, verbose=1, mode='auto')
-    hist = model.fit(x_train, y_train, epochs=500, batch_size=64, callbacks=[early_stopping, reduce_lr], validation_data=(x_val, y_val))
+    hist = model.fit(x_train, y_train, epochs=10000, batch_size=64, callbacks=[early_stopping, reduce_lr], validation_data=(x_val, y_val))
 
     # 평가, 예측
     result = model.evaluate(x_test, y_test, batch_size=48)
@@ -155,7 +157,7 @@ for q in q_lst:
     print(y_predict.shape) # (81, 48, 2)
 
     # 예측값을 submission에 넣기
-    y_predict = pd.DataFrame(y_predict.reshape(y_predict.shape[0], 48*2))
+    y_predict = pd.DataFrame(y_predict.reshape(y_predict.shape[0]*48, 2))
     y_predict2 = pd.concat([y_predict], axis=1)
     y_predict2[y_predict < 0] = 0
     y_predict3 = y_predict2.to_numpy()
