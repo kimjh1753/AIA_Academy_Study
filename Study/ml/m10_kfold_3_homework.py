@@ -1,4 +1,6 @@
-
+# 실습, 과제!!!
+# train, test 나눈다음에 train만발리데이션 하지 말고,
+# kfold 한 후에 train_test_split 사용
 
 import numpy as np
 from sklearn.datasets import load_iris
@@ -41,6 +43,8 @@ scores = cross_val_score(model, x_train, y_train, cv=kfold)
 
 print('scores : ', scores)
 # scores :  [1.         1.         0.83333333 1.         0.93333333]
+
+# scores :  [1.         1.         1.         0.91666667 0.95833333]
 '''
 # 3. 컴파일, 훈련
 model.fit(x, y)

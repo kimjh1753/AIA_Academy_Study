@@ -15,6 +15,9 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
 
+import warnings
+warnings.filterwarnings('ignore')
+
 # 1. 데이터
 # x, y = load_iris(return_X_y=True)
 
@@ -38,15 +41,10 @@ kfold = KFold(n_splits=5, shuffle=True)
 # model = KNeighborsClassifier()
 # model = LogisticRegression()
 # model = DecisionTreeClassifier()
-model = RandomForestClassifier()
+# model = RandomForestClassifier()
 
-scores = cross_val_score(model, x_train, y_train, cv=kfold)
-print('scores : ', scores)
-
-# model = [LinearSVC(), SVC(), KNeighborsClassifier(), LogisticRegression(), DecisionTreeClassifier(), RandomForestClassifier()]
-# for i in range(6):
-#     scores = cross_val_score(model[i], x_train, y_train, cv=kfold)
-#     print('scores : ', scores)
+# scores = cross_val_score(model, x_train, y_train, cv=kfold)
+# print('scores : ', scores)
 
 '''
 # model = LinearSVC()
@@ -67,3 +65,15 @@ print('scores : ', scores)
 # model = RandomForestClassifier()
 # scores :  [0.95604396 0.96703297 0.95604396 0.96703297 0.95604396]
 '''
+
+model = [LinearSVC(), SVC(), KNeighborsClassifier(), LogisticRegression(), DecisionTreeClassifier(), RandomForestClassifier()]
+for i in range(6):
+    scores = cross_val_score(model[i], x_train, y_train, cv=kfold)
+    print('scores : ', scores)
+
+# scores :  [0.8021978  0.93406593 0.94505495 0.91208791 0.91208791]
+# scores :  [0.92307692 0.91208791 0.92307692 0.85714286 0.92307692]
+# scores :  [0.92307692 0.95604396 0.92307692 0.92307692 0.92307692]
+# scores :  [0.92307692 0.94505495 0.93406593 0.96703297 0.93406593]
+# scores :  [0.94505495 0.93406593 0.9010989  0.93406593 0.94505495]
+# scores :  [0.97802198 0.96703297 0.95604396 0.93406593 0.95604396]

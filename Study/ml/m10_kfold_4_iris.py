@@ -40,15 +40,10 @@ kfold = KFold(n_splits=5, shuffle=True)
 # model = KNeighborsClassifier()
 # model = LogisticRegression()
 # model = DecisionTreeClassifier()
-model = RandomForestClassifier()
+# model = RandomForestClassifier()
 
-scores = cross_val_score(model, x_train, y_train, cv=kfold)
-print('scores : ', scores)
-
-# model = [LinearSVC(), SVC(), KNeighborsClassifier(), LogisticRegression(), DecisionTreeClassifier(), RandomForestClassifier()]
-# for i in range(6):
-#     scores = cross_val_score(model[i], x_train, y_train, cv=kfold)
-#     print('scores : ', scores)
+# scores = cross_val_score(model, x_train, y_train, cv=kfold)
+# print('scores : ', scores)
 
 '''
 # model = LinearSVC()
@@ -69,3 +64,15 @@ print('scores : ', scores)
 # model = RandomForestClassifier()
 # scores :  [1.         0.95833333 1.         0.95833333 0.95833333]
 '''
+
+model = [LinearSVC(), SVC(), KNeighborsClassifier(), LogisticRegression(), DecisionTreeClassifier(), RandomForestClassifier()]
+for i in range(6):
+    scores = cross_val_score(model[i], x_train, y_train, cv=kfold)
+    print('scores : ', scores)
+
+# scores :  [1.         1.         1.         0.91666667 0.95833333]
+# scores :  [0.95833333 0.91666667 1.         0.91666667 1.        ]
+# scores :  [0.95833333 1.         0.95833333 1.         0.95833333]
+# scores :  [1.         0.95833333 0.95833333 0.95833333 1.        ]
+# scores :  [0.91666667 1.         0.95833333 1.         0.95833333]
+# scores :  [1.    1.    0.875 1.    1.   ]

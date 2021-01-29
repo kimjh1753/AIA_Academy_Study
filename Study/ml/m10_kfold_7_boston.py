@@ -14,6 +14,9 @@ from sklearn.neighbors import KNeighborsClassifier, KNeighborsRegressor
 from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 
+import warnings
+warnings.filterwarnings('ignore')
+
 # 1. 데이터
 # x, y = load_iris(return_X_y=True)
 
@@ -35,15 +38,10 @@ kfold = KFold(n_splits=5, shuffle=True)
 # model = LinearRegression()
 # model = KNeighborsRegressor()
 # model = DecisionTreeRegressor()
-model = RandomForestRegressor()
+# model = RandomForestRegressor()
 
-scores = cross_val_score(model, x_train, y_train, cv=kfold)
-print('scores : ', scores)
-
-# model = [LinearSVC(), SVC(), KNeighborsClassifier(), LogisticRegression(), DecisionTreeClassifier(), RandomForestClassifier()]
-# for i in range(6):
-#     scores = cross_val_score(model[i], x_train, y_train, cv=kfold)
-#     print('scores : ', scores)
+# scores = cross_val_score(model, x_train, y_train, cv=kfold)
+# print('scores : ', scores)
 
 '''
 # model = LinearRegression()
@@ -58,3 +56,13 @@ print('scores : ', scores)
 # model = RandomForestRegressor()
 # scores :  [0.78435647 0.86305448 0.89780261 0.84421241 0.89031591]
 '''
+
+model = [LinearRegression(), KNeighborsRegressor(), DecisionTreeRegressor(), RandomForestRegressor()]
+for i in range(4):
+    scores = cross_val_score(model[i], x_train, y_train, cv=kfold)
+    print('scores : ', scores)
+
+# scores :  [0.77958178 0.75639723 0.74039421 0.65628492 0.46979964]
+# scores :  [0.41317482 0.34239862 0.58698611 0.46763828 0.45723993]
+# scores :  [0.65751125 0.72570296 0.51748246 0.6452263  0.80750832]
+# scores :  [0.91992743 0.82552256 0.90361183 0.70506899 0.81480873]

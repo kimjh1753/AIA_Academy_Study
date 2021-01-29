@@ -52,6 +52,12 @@ parameters = [
 # model = SVC()
 model = GridSearchCV(SVC(), parameters, cv=kfold) # 파라미터 100% 가동
 
+score = cross_val_score(model, x_train, y_train, cv=kfold)
+
+print('교차검증점수 : ', score)
+# 교차검증점수 :  [1.         1.         1.         0.83333333 0.66666667]
+
+'''
 # 3. 훈련
 model.fit(x_train, y_train)
 
@@ -69,3 +75,4 @@ datasets = datasets.to_csv('../data/csv/iris_sklearn(gridSearch1).csv', sep=',')
 # 최적의 매개변수 : SVC(C=1, kernel='linear')
 # 최종정답률 0.9583333333333334
 # 0.9583333333333334
+'''

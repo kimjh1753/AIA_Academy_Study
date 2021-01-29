@@ -34,16 +34,11 @@ kfold = KFold(n_splits=5, shuffle=True)
 # 2. 모델 구성
 # model = LinearRegression()
 # model = KNeighborsRegressor()
-model = DecisionTreeRegressor()
+# model = DecisionTreeRegressor()
 # model = RandomForestRegressor()
 
-scores = cross_val_score(model, x_train, y_train, cv=kfold)
-print('scores : ', scores)
-
-# model = [LinearSVC(), SVC(), KNeighborsClassifier(), LogisticRegression(), DecisionTreeClassifier(), RandomForestClassifier()]
-# for i in range(6):
-#     scores = cross_val_score(model[i], x_train, y_train, cv=kfold)
-#     print('scores : ', scores)
+# scores = cross_val_score(model, x_train, y_train, cv=kfold)
+# print('scores : ', scores)
 
 '''
 # model = LinearRegression()
@@ -58,3 +53,14 @@ print('scores : ', scores)
 # model = RandomForestRegressor()
 # scores :  [0.48137742 0.17769678 0.43730637 0.46709716 0.43486591]
 '''
+
+model = [LinearRegression(), KNeighborsRegressor(), DecisionTreeRegressor(), RandomForestRegressor()]
+for i in range(4):
+    scores = cross_val_score(model[i], x_train, y_train, cv=kfold)
+    print('scores : ', scores)
+
+# scores :  [0.50721149 0.57801005 0.40578743 0.40512248 0.51264439]
+# scores :  [0.29598714 0.31465259 0.2385188  0.35773633 0.40829159]
+# scores :  [-0.04369792 -0.16127378 -0.03435711 -0.24051868 -0.09695677]
+# scores :  [0.45931018 0.47266655 0.3620639  0.49670562 0.23757285]
+

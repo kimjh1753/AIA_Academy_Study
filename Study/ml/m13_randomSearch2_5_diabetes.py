@@ -1,17 +1,17 @@
-# 모델 : RandomForestClassfier
+# 모델 : RandomForestRegressor
 
 from inspect import Parameter
 import numpy as np
-from sklearn.datasets import load_iris
+from sklearn.datasets import load_iris, load_breast_cancer, load_wine, load_boston, load_diabetes
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
-from sklearn.model_selection import train_test_split, KFold, cross_val_score, GridSearchCV
-from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split, KFold, cross_val_score
+from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
+from sklearn.metrics import accuracy_score, r2_score
 
-# from sklearn.svm import LinearSVC, SVC
-# from sklearn.neighbors import KNeighborsClassifier
-# from sklearn.linear_model import LogisticRegression
-# from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier
+# from sklearn.linear_model import LinearRegression
+# from sklearn.neighbors import KNeighborsClassifier, KNeighborsRegressor
+# from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
+from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -19,12 +19,12 @@ warnings.filterwarnings('ignore')
 # 1. 데이터
 # x, y = load_iris(return_X_y=True)
 
-dataset = load_iris()
+dataset = load_diabetes()
 x = dataset.data
 y = dataset.target
 # print(dataset.DESCR)
 # print(dataset.feature_names)
-print(x.shape, y.shape)      # (150, 4) (150, )
+print(x.shape, y.shape)      # (506, 13) (506,)
 x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.2, random_state=44)
 
 kfold = KFold(n_splits=5, shuffle=True)
@@ -47,7 +47,8 @@ parameters = [
 
 # 2. 모델 구성
 # model = SVC()
-model = GridSearchCV(RandomForestClassifier(), parameters, cv=kfold) 
+# model = GridSearchCV(RandomForestRegressor(), parameters, cv=kfold)
+model = RandomizedSearchCV(RandomForestRegressor(), parameters, cv=kfold)
 
 # 3. 훈련
 model.fit(x_train, y_train)
@@ -56,11 +57,11 @@ model.fit(x_train, y_train)
 print("최적의 매개변수 :", model.best_estimator_)
 
 y_pred = model.predict(x_test)
-print('최종정답률', accuracy_score(y_test, y_pred))
+print('최종정답률', r2_score(y_test, y_pred))
 
 aaa = model.score(x_test, y_test)
 print(aaa)
 
-# 최적의 매개변수 : RandomForestClassifier(min_samples_leaf=3, min_samples_split=5)
-# 최종정답률 0.9583333333333334
-# 0.9583333333333334
+# 최적의 매개변수 : RandomForestRegressor(min_samples_leaf=10)
+# 최종정답률 0.29990956161247373
+# 0.29990956161247373
