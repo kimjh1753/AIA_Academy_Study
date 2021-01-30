@@ -46,7 +46,7 @@ parameters = [
     {'mal__n_jobs' : [-1, 2, 4], 'mal__n_estimators' : [100, 200]}
 ]
 
-# 2. Model
+# 2. 모델
 # pipe = Pipeline([("scaler", MinMaxScaler()), ('mal', RandomForestRegressor())])
 # pipe = make_pipeline(MinMaxScaler(), RandomForestRegressor())
 

@@ -45,7 +45,7 @@ parameters = [
     {"mal__C":[1, 10, 100, 1000], "mal__kernel":["sigmoid"], "mal__gamma":[0.001, 0.0001]}
 ]
 
-# 2. Model
+# 2. 모델
 # model = Pipeline([("scaler", MinMaxScaler()), ('malddong', SVC())])
 # model = make_pipeline(MinMaxScaler(), SVC())
 

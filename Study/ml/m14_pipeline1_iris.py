@@ -33,7 +33,7 @@ x_train, x_test, y_train, y_test = train_test_split(
 # x_train = scaler.transform(x_train)
 # x_test = scaler.transform(x_test)
 
-# 2. Model
+# 2. 모델
 # model = Pipeline([("scaler", MinMaxScaler()), ('malddong', SVC())])
 # model = make_pipeline(MinMaxScaler(), SVC())
 
