@@ -8,11 +8,15 @@ from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.model_selection import train_test_split, KFold, cross_val_score
 from sklearn.metrics import accuracy_score
 
+# 모델마다 나오는 결과 값을 비교한다.
 from sklearn.svm import LinearSVC, SVC
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier  # Classifier : 분류모델
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression # 회귀가 아닌 분류 모델임
+
+import warnings
+warnings.filterwarnings('ignore')
 
 # 1. 데이터
 # x, y = load_iris(return_X_y=True)
@@ -25,11 +29,8 @@ y = dataset.target
 
 print(x.shape, y.shape)      # (150, 4) (150, )
 
+# KFold.split : 데이터를 학습 및 테스트 세트로 분할하는 인덱스를 생성
 kfold = KFold(n_splits=5, shuffle=True)
-
-x_train, x_test, y_train, y_test = train_test_split(
-    x, y, random_state=77, shuffle=True, train_size=0.8
-)
 
 # 2. 모델 구성
 model = LinearSVC()
@@ -39,52 +40,21 @@ model = LinearSVC()
 # model = DecisionTreeClassifier()
 # model = RandomForestClassifier()
 
-scores = cross_val_score(model, x_train, y_train, cv=kfold)
+# kfold >> train, test 분리
+for train_index, test_index in kfold.split(x) : # 다섯번 반복
+ 
+    # train : test
+    x_train, x_test = x[train_index], x[test_index]
+    y_train, y_test = y[train_index], y[test_index]
+    
+    # train_test_split >> train, validation 분리
+    x_train, x_val, y_train, y_val = \
+        train_test_split(x_train, y_train, train_size=0.8, shuffle=True, random_state=47)
+    # print(x.shape)          # (150, 4)
+    # print(x_train.shape)    # (96, 4)
+    # print(x_val.shape)      # (24, 4)
+    # print(x_test.shape)     # (30, 4)
 
-print('scores : ', scores)
-# scores :  [1.         1.         0.83333333 1.         0.93333333]
-
-# scores :  [1.         1.         1.         0.91666667 0.95833333]
-'''
-# 3. 컴파일, 훈련
-model.fit(x, y)
-
-# 4. 평가, 예측
-y_pred = model.predict(x_test)
-# print(x_test, "의 예측결과", y_pred)
-
-result = model.score(x_test, y_test)
-print("model.score : ", result)
-
-acc = accuracy_score(y_test, y_pred)
-print("accuracy_score : ", acc)
-
-# model = LinearSVC()
-# model.score :  0.9666666666666667
-# accuracy_score :  0.9666666666666667
-
-# model = SVC()
-# model.score :  1.0
-# accuracy_score :  1.0
-
-# model = KNeighborsClassifier()
-# model.score :  1.0
-# accuracy_score :  1.0
-
-# model = LogisticRegression()
-# model.score :  0.9666666666666667
-# accuracy_score :  0.9666666666666667
-
-# model = DecisionTreeClassifier()
-# model.score :  0.9666666666666667
-# accuracy_score :  0.9666666666666667
-
-# model = RandomForestClassifier()
-# model.score :  0.9666666666666667
-# accuracy_score :  0.9666666666666667
-
-# iris에서 model들 중 SVC(), KNeighborsClassifier()이 성능이 제일 좋다.   
-
-# Tensorflow
-# acc : 1.0
-'''
+    score = cross_val_score(model, x_train, y_train, cv=kfold)
+    print('score : ', score)
+    

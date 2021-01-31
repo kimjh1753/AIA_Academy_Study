@@ -28,8 +28,9 @@ print(dataset.DESCR)
 print(dataset.feature_names)
 print(x.shape, y.shape)      # (442, 10) (442,)
 
-x_train, x_test, y_train, y_test = train_test_split(
-    x, y, train_size=0.2, random_state=44)
+# x_train, x_test, y_train, y_test = train_test_split(
+#     x, y, train_size=0.2, random_state=44)
+kfold = KFold(n_splits=5, shuffle=True)
 
 parameters = [
     {'mal__n_estimators' : [100, 200], 'mal__max_depth' : [6, 8, 10, 12]},
@@ -40,12 +41,13 @@ parameters = [
 ]
 
 # 2. 모델
-pipe = Pipeline([("scaler", StandardScaler()), ('mal', RandomForestRegressor())])
+for train_index, test_index in kfold.split(x):
+    x_train, x_test = x[train_index], x[test_index]
+    y_train, y_test = y[train_index], y[test_index]
 
-model = GridSearchCV(pipe, parameters, cv=5)
-
-score = cross_val_score(model, x_train, y_train, cv=5)
-
-print('교차검증점수 : ', score)
+    pipe = Pipeline([("scaler", StandardScaler()), ('mal', RandomForestRegressor())])
+    model = GridSearchCV(pipe, parameters, cv=kfold)
+    score = cross_val_score(model, x_train, y_train, cv=kfold)
+    print('교차검증점수 : ', score)
 
 # 교차검증점수 :  [ 0.43743726 -0.05993835  0.47506326  0.14561141  0.31054274]

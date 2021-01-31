@@ -69,11 +69,11 @@ kfold = KFold(n_splits=5, shuffle=True)
 model = [LinearSVC(), SVC(), KNeighborsClassifier(), LogisticRegression(), DecisionTreeClassifier(), RandomForestClassifier()]
 for i in range(6):
     scores = cross_val_score(model[i], x_train, y_train, cv=kfold)
-    print('scores : ', scores)
+    print('scores : ', scores, '-'+str(model[i]))
 
-# scores :  [0.8021978  0.93406593 0.94505495 0.91208791 0.91208791]
-# scores :  [0.92307692 0.91208791 0.92307692 0.85714286 0.92307692]
-# scores :  [0.92307692 0.95604396 0.92307692 0.92307692 0.92307692]
-# scores :  [0.92307692 0.94505495 0.93406593 0.96703297 0.93406593]
-# scores :  [0.94505495 0.93406593 0.9010989  0.93406593 0.94505495]
-# scores :  [0.97802198 0.96703297 0.95604396 0.93406593 0.95604396]
+# scores :  [0.91208791 0.94505495 0.85714286 0.9010989  0.9010989 ] -LinearSVC()
+# scores :  [0.92307692 0.9010989  0.95604396 0.89010989 0.91208791] -SVC()
+# scores :  [0.94505495 0.9010989  0.94505495 0.91208791 0.92307692] -KNeighborsClassifier()
+# scores :  [0.93406593 0.98901099 0.86813187 0.94505495 1.        ] -LogisticRegression()
+# scores :  [0.91208791 0.9010989  0.93406593 0.93406593 0.97802198] -DecisionTreeClassifier()
+# scores :  [0.91208791 0.97802198 0.96703297 0.94505495 0.94505495] -RandomForestClassifier()
