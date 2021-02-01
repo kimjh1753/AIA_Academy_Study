@@ -70,7 +70,7 @@ n_jobs = -1
 model = GridSearchCV(XGBRegressor(n_jobs=-1, eval_metric='mlogloss'), parameters, cv=kfold) 
 
 # 3. Train
-model.fit(x_train, y_train, eval_metric='logloss')
+model.fit(x_train, y_train, eval_metric='logloss', verbose=True)
 
 # 4. 평가, 예측
 y_pred = model.predict(x_test)
@@ -88,5 +88,8 @@ print(aaa)
 # [[7.0327958e-30 2.2413428e-23 6.9391834e-21 9.2217209e-22 5.1841172e-22
 #   8.7506048e-26 2.4799229e-27 1.0000000e+00 8.0364114e-26 3.3208760e-17]]
 
-# m33_pca_mnist2_xgb
+# m34_pca_mnist2_xgb_gridSearch
 # acc :  0.8432519608187043
+
+# m34_pca_mnist2_xgb_RandomSearch
+

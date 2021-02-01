@@ -42,10 +42,12 @@ print(date_now)
 # model = DecisionTreeClassifier(max_depth=4)
 # model = RandomForestClassifier()
 # model = GradientBoostingClassifier()
-model = XGBClassifier(n_jobs=1, use_label_encoder=False)
+model = XGBClassifier(n_jobs=8, n_estimators=100)
 
 # 3. Train
-model.fit(x_train, y_train, eval_metric='logloss')
+model.fit(x_train, y_train, eval_metric='mlogloss', verbose=True,    # logloss
+          eval_set=[(x_train, y_train), (x_test, y_test)]
+) 
 
 # 4. Evaluate, Predict
 acc = model.score(x_test, y_test)

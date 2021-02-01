@@ -47,7 +47,7 @@ model = GridSearchCV(XGBClassifier(n_jobs=-1, eval_metric='mlogloss'), parameter
 model.fit(x_train, y_train)
 
 # 4. 평가, 예측
-print("최적의 매개변수 :", model.best_estimator_)
+# print("최적의 매개변수 :", model.best_estimator_)
 
 y_pred = model.predict(x_test)
 print('최종정답률', accuracy_score(y_test, y_pred))

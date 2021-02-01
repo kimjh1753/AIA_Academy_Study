@@ -18,6 +18,7 @@ from sklearn.metrics import accuracy_score, r2_score
 # from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
 from xgboost import XGBRegressor
+from xgboost.sklearn import XGBClassifier
 
 # 1. 데이터
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
@@ -54,7 +55,7 @@ warnings.filterwarnings('ignore')
 
 kfold = KFold(n_splits=5, shuffle=True)
 
-model = XGBRegressor(n_jobs=8, use_label_encoder=False)
+model = XGBClassifier(n_jobs=8, use_label_encoder=False)
 
 # 3. Train
 model.fit(x_train, y_train, eval_metric='logloss')
@@ -75,5 +76,5 @@ print("acc : ", acc)
 #   8.7506048e-26 2.4799229e-27 1.0000000e+00 8.0364114e-26 3.3208760e-17]]
 
 # m33_pca_mnist2_xgb
-# acc :  0.8310533267393719
+# acc :  0.9607857142857142
 
