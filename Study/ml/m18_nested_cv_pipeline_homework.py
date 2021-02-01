@@ -28,8 +28,6 @@ print(dataset.DESCR)
 print(dataset.feature_names)
 print(x.shape, y.shape)      # (442, 10) (442,)
 
-# x_train, x_test, y_train, y_test = train_test_split(
-#     x, y, train_size=0.2, random_state=44)
 kfold = KFold(n_splits=5, shuffle=True)
 
 parameters = [
@@ -50,4 +48,8 @@ for train_index, test_index in kfold.split(x):
     score = cross_val_score(model, x_train, y_train, cv=kfold)
     print('교차검증점수 : ', score)
 
-# 교차검증점수 :  [ 0.43743726 -0.05993835  0.47506326  0.14561141  0.31054274]
+# 교차검증점수 :  [0.34395835 0.28915772 0.49035544 0.51783469 0.4370448 ]
+# 교차검증점수 :  [0.46259699 0.43480257 0.36434229 0.35239897 0.54223171]
+# 교차검증점수 :  [0.42033735 0.35701004 0.53333913 0.35183889 0.29475233]
+# 교차검증점수 :  [0.40997647 0.4734069  0.57758434 0.41327127 0.45522912]
+# 교차검증점수 :  [0.51265531 0.52028256 0.44623641 0.33302252 0.44299018]
