@@ -4,12 +4,6 @@
 # mnist dnn보다 성능 좋게 만들어라!!!
 # cnn과 비교!!!
 
-# m31로 만든 0.95 이상의 n_component=? 를 사용하여 
-# xgb 모델을 만들것 (디폴트)
-
-# mnist dnn보다 성능 좋게 만들어라!!!
-# cnn과 비교!!!
-
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
