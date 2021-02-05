@@ -13,6 +13,20 @@ submission = pd.read_csv('../study/DACON/data-1/submission.csv')
 
 print(train.shape, test.shape) # (2048, 787) (20480, 786)
 
+#distribution of label('digit') 
+print(train['digit'].value_counts()) # 각 숫자별 몇개인지
+# 2    233
+# 5    225
+# 6    212
+# 4    207
+# 3    205
+# 1    202
+# 9    197
+# 7    194
+# 0    191
+# 8    182
+# Name: digit, dtype: int64
+
 # idx = 318
 # img = train.loc[idx, '0':].values.reshape(28, 28).astype(int)
 # digit = train.loc[idx, 'digit']
@@ -23,8 +37,10 @@ print(train.shape, test.shape) # (2048, 787) (20480, 786)
 # plt.show()
 
 # 1. Data
-x = train.drop(['id', 'digit', 'letter'], axis=1).values
-x_pred = test.drop(['id', 'letter'], axis=1).values
+
+# drop 인덱스
+x = train.drop(['id', 'digit', 'letter'], axis=1).values # >> x(인덱스 있는 3개 버리기)
+x_pred = test.drop(['id', 'letter'], axis=1).values # >> x_pred(인덱스 있는 것 버리기)
 
 scaler = MinMaxScaler()
 scaler.fit(x)
@@ -64,7 +80,8 @@ from tensorflow.keras.layers import Dense, Conv2D, Dropout, Flatten, Input, Batc
 model = Sequential()
     
 model.add(Conv2D(16,(3,3),activation='relu',input_shape=(28,28,1),padding='same'))
-model.add(BatchNormalization())
+model.add(BatchNormalization())   
+# BatchNormalization >> 학습하는 동안 모델이 추정한 입력 데이터 분포의 평균과 분산으로 normalization을 하고자 하는 것
 model.add(Dropout(0.3))
     
 model.add(Conv2D(32,(3,3),activation='relu',padding='same'))
@@ -100,7 +117,7 @@ model.add(Dense(64,activation='relu'))
 model.add(BatchNormalization())
 model.add(Dropout(0.3))
 
-model.add(Dense(10,activation='softmax'))
+model.add(Dense(10,activation='softmax')) # softmax는 'categorical_crossentropy' 짝꿍
 
 model.summary()
 

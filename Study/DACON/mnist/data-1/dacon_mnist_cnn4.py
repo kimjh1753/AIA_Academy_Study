@@ -16,16 +16,28 @@ submission = pd.read_csv('../study/DACON/data-1/submission.csv')
 
 print(train.shape, test.shape) # (2048, 787) (20480, 786) (20480, 2)
 
-'''
-idx = 318
-img = train.loc[idx, '0':].values.reshape(28, 28).astype(int)
-digit = train.loc[idx, 'digit']
-letter = train.loc[idx, 'letter']
+#distribution of label('digit') 
+print(train['digit'].value_counts()) # 각 숫자별 몇개인지
+# 2    233
+# 5    225
+# 6    212
+# 4    207
+# 3    205
+# 1    202
+# 9    197
+# 7    194
+# 0    191
+# 8    182
+# Name: digit, dtype: int64
 
-plt.title('Index: %i, Digit: %s, Letter: %s'%(idx, digit, letter))
-plt.imshow(img)
-plt.show()
-'''
+# idx = 318
+# img = train.loc[idx, '0':].values.reshape(28, 28).astype(int)
+# digit = train.loc[idx, 'digit']
+# letter = train.loc[idx, 'letter']
+
+# plt.title('Index: %i, Digit: %s, Letter: %s'%(idx, digit, letter))
+# plt.imshow(img)
+# plt.show()
 
 # 1. Data
 
@@ -54,13 +66,13 @@ idg2 = ImageDataGenerator() # #ImageDataGenerator 머신러닝
 # width_shift_range 좌우로 움직이는 정도:(-1,1) 처음부터 끝까지
 # height_shift_range 위아래로 움직이는 정도
 
+'''
 sample_data = train2[100].copy()
 sample = expand_dims(sample_data,0)
 # expand_dims : 차원을 확장시킨다.
 sample_datagen = ImageDataGenerator(height_shift_range=(-1,1),width_shift_range=(-1,1))
 sample_generator = sample_datagen.flow(sample, batch_size=1)    #  flow : ImageDataGenerator 디버깅
 
-'''
 plt.figure(figsize=(16,10))
 for i in range(9) :
     plt.subplot(3, 3, i+1) # 5: 세로 5: 가로

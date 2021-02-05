@@ -13,6 +13,21 @@ submission = pd.read_csv('../study/DACON/data-1/submission.csv')
 
 print(train.shape, test.shape) # (2048, 787) (20480, 786)
 
+#distribution of label('digit') 
+print(train['digit'].value_counts()) # 각 숫자별 몇개인지
+# 2    233
+# 5    225
+# 6    212
+# 4    207
+# 3    205
+# 1    202
+# 9    197
+# 7    194
+# 0    191
+# 8    182
+# Name: digit, dtype: int64
+
+
 # idx = 318
 # img = train.loc[idx, '0':].values.reshape(28, 28).astype(int)
 # digit = train.loc[idx, 'digit']
@@ -107,7 +122,7 @@ model.add(Dense(1000, activation='relu'))
 model.add(BatchNormalization())
 model.add(Dense(1000, activation='relu'))
 model.add(BatchNormalization())
-model.add(Dense(10, activation='softmax'))
+model.add(Dense(10, activation='softmax')) # softmax는 'categorical_crossentropy' 짝꿍
 
 model.summary()
 # 3. Compile, Train

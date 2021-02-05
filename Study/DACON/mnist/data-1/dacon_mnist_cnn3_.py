@@ -16,24 +16,36 @@ submission = pd.read_csv('../study/DACON/data-1/submission.csv')
 
 print(train.shape, test.shape) # (2048, 787) (20480, 786) (20480, 2)
 
-'''
-idx = 318
-img = train.loc[idx, '0':].values.reshape(28, 28).astype(int)
-digit = train.loc[idx, 'digit']
-letter = train.loc[idx, 'letter']
+#distribution of label('digit') 
+print(train['digit'].value_counts()) # 각 숫자별 몇개인지
+# 2    233
+# 5    225
+# 6    212
+# 4    207
+# 3    205
+# 1    202
+# 9    197
+# 7    194
+# 0    191
+# 8    182
+# Name: digit, dtype: int64
 
-plt.title('Index: %i, Digit: %s, Letter: %s'%(idx, digit, letter))
-plt.imshow(img)
-plt.show()
-'''
+# idx = 318
+# img = train.loc[idx, '0':].values.reshape(28, 28).astype(int)
+# digit = train.loc[idx, 'digit']
+# letter = train.loc[idx, 'letter']
+
+# plt.title('Index: %i, Digit: %s, Letter: %s'%(idx, digit, letter))
+# plt.imshow(img)
+# plt.show()
 
 # 1. Data
-
 # tra_di = train['digit'].value_counts()
 # print(tra_di.shape) # (10,)
 
-train2 = train.drop(['id', 'digit','letter'],1) # >> x
-test2 = test.drop(['id','letter'],1)  # >> x_pred
+# drop 인덱스
+train2 = train.drop(['id', 'digit','letter'],1) # >> x(인덱스 있는 3개 버리기)
+test2 = test.drop(['id','letter'],1)  # >> x_pred(인덱스 있는 것 버리기)
 
 train2 = train2.values  # >>> x
 test2 = test2.values    # >>> x_pred
@@ -72,6 +84,7 @@ plt.show()
 
 # cross validation
 skf = StratifiedKFold(n_splits=40, random_state=42, shuffle=True) #n_splits 몇 번 반복
+# stratified 는 label 의 분포를 유지, 각 fold가 전체 데이터셋을 잘 대표한다.
 
 # 2. Model
 reduce_lr = ReduceLROnPlateau(patience=130, factor=0.5, verbose=1)
@@ -98,10 +111,11 @@ for train_index, test_index in skf.split(train2, y) : # >>> x, y
     print(x_test.shape, y_test.shape)   # (52, 28, 28, 1) (52,)
     print(x_val.shape, y_val.shape)     # (200, 28, 28, 1) (200,)
     
-    train_generator = idg.flow(x_train, y_train, batch_size=8)
-    test_generator = idg2.flow(x_test, y_test, batch_size=8)
-    valid_generator = idg2.flow(x_val, y_val)
-    test_generator = idg2.flow(test2, shuffle=False)
+    # 실시간 데이터 증강을 사용해 배치에 대해서 모델을 학습(fit_generator에서 할 것)
+    train_generator = idg.flow(x_train, y_train, batch_size=8) #훈련데이터셋을 제공할 제네레이터를 지정
+    test_generator = idg2.flow(x_test, y_test, batch_size=8) #테스터데이터셋을 제공할 제네레이터를 지정
+    valid_generator = idg2.flow(x_val, y_val) # # validation_data에 넣을 것
+    test_generator = idg2.flow(test2, shuffle=False) # # predict(x_test)와 같은 역할
 
     # 2. Model
     model = Sequential()
@@ -143,17 +157,19 @@ for train_index, test_index in skf.split(train2, y) : # >>> x, y
     model.add(BatchNormalization())
     model.add(Dropout(0.3))
 
-    model.add(Dense(10,activation='softmax'))
+    model.add(Dense(10,activation='softmax')) # softmax는 'categorical_crossentropy' 짝꿍
 
     # 3. Compile, Train    
-    model.compile(loss='sparse_categorical_crossentropy', optimizer=Adam(lr=0.002, epsilon=None), metrics=['acc']) # epsilon : 0으로 나눠지는 것을 피하기 위함
+    model.compile(loss='sparse_categorical_crossentropy', optimizer=Adam(lr=0.002, epsilon=None), metrics=['acc']) # y의 acc가 목적
+                                                                                   # epsilon : 0으로 나눠지는 것을 피하기 위함
     learning_history = model.fit(train_generator, epochs=1000, validation_data=valid_generator, callbacks=[reduce_lr, es, mc])
     # model.load_weights('../study/dacon/data-1/modelcheckpoint/0203_4_cp.hdf5')
 
     # 4. Predict
     loss, acc = model.evaluate(test_generator)
 
-    result += model.predict_generator(test_generator,verbose=True)/40
+    result += model.predict_generator(test_generator,verbose=True)/40 # a += b는 a= a+b, 40은 StratifiedKFold 에서 n_splits=40을 의미
+    # predict_generator 예측 결과는 클래스별 확률 벡터로 출력
 
     # save val_loss
     hist = pd.DataFrame(learning_history.history)
@@ -161,7 +177,7 @@ for train_index, test_index in skf.split(train2, y) : # >>> x, y
     val_acc_max.append(hist['val_acc'].max())
 
     nth += 1
-    print(nth, '번째 학습을 완료했습니다.')
+    print(nth, '번째 학습을 완료했습니다.') # n_splits 다 돌았는지 확인
 
     print(val_loss_min, np.mean(val_loss_min))
     print(val_acc_max, np.mean(val_acc_max))
