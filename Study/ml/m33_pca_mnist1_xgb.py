@@ -20,6 +20,9 @@ from sklearn.ensemble import RandomForestClassifier
 from xgboost import XGBRegressor
 from xgboost.sklearn import XGBClassifier
 
+import warnings
+warnings.filterwarnings('ignore')
+
 # 1. 데이터
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
@@ -46,12 +49,9 @@ x = pca.fit_transform(x)
 # print(x)
 print(x.shape) # (70000, 154)
 
-x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.8, shuffle=True)
-print(x_train.shape, x_test.shape) # (56000, 154) (14000, 154)
-print(y_train.shape, y_test.shape) # (56000,) (14000,)
-
-import warnings
-warnings.filterwarnings('ignore')
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=1/7, shuffle=True)
+print(x_train.shape, x_test.shape) # (60000, 154) (10000, 154)
+print(y_train.shape, y_test.shape) # (60000,) (10000,)
 
 kfold = KFold(n_splits=5, shuffle=True)
 

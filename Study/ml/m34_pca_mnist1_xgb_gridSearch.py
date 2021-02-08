@@ -17,8 +17,7 @@ from sklearn.metrics import accuracy_score, r2_score
 # from sklearn.linear_model import LogisticRegression
 # from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
-from xgboost import XGBRegressor
-
+from xgboost import XGBClassifier
 # 1. 데이터
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
@@ -66,11 +65,12 @@ parameters = [
 n_jobs = -1
 
 # 2. 모델 구성
-model = GridSearchCV(XGBRegressor(n_jobs=-1, use_label_encoder= False), parameters, cv=kfold) 
+model = GridSearchCV(XGBClassifier(n_jobs=-1, use_label_encoder= False), parameters, cv=kfold) 
 # model = RandomizedSearchCV(XGBRegressor(n_jobs=-1, eval_metric='mlogloss'), parameters, cv=kfold) 
 
 # 3. Train
-model.fit(x_train, y_train, eval_metric='logloss', verbose=True)
+model.fit(x_train, y_train, eval_metric='logloss', verbose=True, eval_set=[(x_train, y_train), (x_test, y_test)],
+          early_stopping_rounds=10)
 
 # 4. 평가, 예측
 y_pred = model.predict(x_test)
@@ -78,6 +78,7 @@ print('최종정답률', accuracy_score(y_test, y_pred))
 
 aaa = model.score(x_test, y_test)
 print(aaa)
+
 
 # keras40_mnist2_cnn
 # loss :  0.00260396976955235
@@ -89,7 +90,7 @@ print(aaa)
 #   8.7506048e-26 2.4799229e-27 1.0000000e+00 8.0364114e-26 3.3208760e-17]]
 
 # m34_pca_mnist1_xgb_gridSearch
-# acc :  0.8432519608187043
+#   
 
 # m34_pca_mnist1_xgb_RandomSearch
 # 

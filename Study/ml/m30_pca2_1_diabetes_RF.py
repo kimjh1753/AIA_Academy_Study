@@ -39,15 +39,15 @@ print("cumsum : ", cumsum)
 # cumsum :  [0.40242142 0.55165324 0.67224947 0.76779711 0.83401567 0.89428759 0.94794364 0.99131196 0.99914395 1.        ]
 
 d = np.argmax(cumsum > 0.95)+1
-print("cumsum >= 0.95", cumsum >= 0.95)
-print("d : ", d)
+print("cumsum >= 0.95", cumsum >= 0.95) # cumsum >= 0.95 [False False False False False False False  True  True  True]
+print("d : ", d) # d :  8
 
 # import matplotlib.pyplot as plt
 # plt.plot(cumsum)
 # plt.grid()
 # plt.show()
 
-pca = PCA(n_components=d)
+pca = PCA(n_components = d)
 x = pca.fit_transform(x)
 print(x)
 print(x.shape)         # (442, 8)
@@ -84,7 +84,7 @@ model = RandomizedSearchCV(XGBRegressor(n_jobs = -1, eval_metric='logloss'), par
 model.fit(x_train, y_train)
 
 # 4. 평가, 예측
-print("최적의 매개변수 :", model.best_estimator_)
+# print("최적의 매개변수 :", model.best_estimator_)
 
 y_pred = model.predict(x_test)
 print('최종정답률', r2_score(y_test, y_pred))

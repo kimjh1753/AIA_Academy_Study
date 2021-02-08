@@ -36,9 +36,9 @@ x = pca.fit_transform(x)
 # print(x)
 print(x.shape) # (70000, 154)
 
-x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.8, shuffle=True)
-print(x_train.shape, x_test.shape) # (56000, 154) (14000, 154)
-print(y_train.shape, y_test.shape) # (56000,) (14000,)
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=1/7, shuffle=True)
+print(x_train.shape, x_test.shape) # (60000, 154) (10000, 154)
+print(y_train.shape, y_test.shape) # (60000,) (10000,)
 
 # OnHotEncoding
 # 여러분이 하시오!!!!!
@@ -46,8 +46,8 @@ from tensorflow.keras.utils import to_categorical
 y_train = to_categorical(y_train)
 y_test = to_categorical(y_test)
 
-print(y_train.shape)    # (56000, 10)
-print(y_test.shape)     # (14000, 10)
+print(y_train.shape)    # (60000, 10)
+print(y_test.shape)     # (10000, 10)
 
 # 2. 모델 구성
 from tensorflow.keras.models import Sequential
