@@ -60,13 +60,17 @@ from tensorflow.keras.wrappers.scikit_learn import KerasRegressor
 model2 = KerasRegressor(build_fn=build_model, verbose=1)
 
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
-# model = GridSearchCV(RandomForestRegressor(), parameters, cv=kfold)
+# search = GridSearchCV(model2, hyperparameters, cv=kfold)
 search = RandomizedSearchCV(model2, hyperparameters, cv=kfold)
 
 search.fit(x_train, y_train, verbose=1)
-print(search.best_params_) # {'optimizer': 'rmsprop', 'drop': 0.2, 'batch_size': 40}
-print(search.best_estimator_) # <tensorflow.python.keras.wrappers.scikit_learn.KerasRegressor object at 0x00000208881FD910>
-print(search.best_score_) # -21518.825520833332
+print(search.best_params_) # {'optimizer': 'rmsprop', 'drop': 0.1, 'batch_size': 20}
+print(search.best_estimator_) # <tensorflow.python.keras.wrappers.scikit_learn.KerasRegressor object at 0x0000029DAD25DC10>
+print(search.best_score_) # -21449.686848958332
 
-y_pred = search.predict(x_test)
-print('최종정답률', r2_score(y_test, y_pred)) # 최종정답률 -4.078750983234139
+result = search.score(x_test, y_test)
+print('최종정답률', result) # 최종정답률 -29620.404296875
+
+# xgb
+# 최종정답률 0.22732769398337882
+# 0.22732769398337882

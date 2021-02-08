@@ -9,7 +9,7 @@ import numpy as np
 from tensorflow.keras.models import Sequential, Model
 from tensorflow.keras.layers import Dense, Dropout, Input
 from tensorflow.keras.datasets import mnist
-from tensorflow.python.keras.backend import dropout
+from tensorflow.python.keras.backend import dropout, relu
 
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
@@ -22,13 +22,13 @@ x_train = x_train.reshape(60000, 28*28).astype('float32')/255.
 x_test = x_test.reshape(10000, 28*28).astype('float32')/255.
 
 # 2. 모델
-def build_model(drop=0.5, optimizer='adam'):
+def build_model(drop=0.5, optimizer='adam', node1=512, node2=256, node3=128, activation='relu'):
     inputs = Input(shape=(28*28), name='input')
-    x = Dense(512, activation='relu', name='hidden1')(inputs)
+    x = Dense(node1, activation=activation, name='hidden1')(inputs)
     x = Dropout(drop)(x)
-    x = Dense(256, activation='relu', name='hidden2')(x)
+    x = Dense(node2, activation=activation, name='hidden2')(x)
     x = Dropout(drop)(x)
-    x = Dense(128, activation='relu', name='hidden3')(x)
+    x = Dense(node3, activation=activation, name='hidden3')(x)
     x = Dropout(drop)(x)
     outputs = Dense(10, activation='softmax', name='outputs')(x)
     model = Model(inputs=inputs, outputs=outputs)
@@ -37,11 +37,12 @@ def build_model(drop=0.5, optimizer='adam'):
     return model
 
 def create_hyperparameters():
-    batches = [10, 20, 30, 40, 50]
+    batches = [512, 256, 128, 64, 32]
     optimizers = ['rmsprop', 'adam', 'adadelta']
     dropout = [0.1, 0.2, 0.3]
+    activation = ['relu', 'linear', 'than', 'sigmoid']
     return {"batch_size" : batches, "optimizer" : optimizers,
-            "drop" : dropout}
+            "drop" : dropout, "activation" : activation}
 hyperparameters = create_hyperparameters()            
 model2 = build_model()
 
