@@ -4,11 +4,13 @@ import matplotlib.pyplot as plt
 from skimage.transform import pyramid_reduce
 
 # 경로
-base_path = r'C:\project\celeba-dataset'   
+base_path = r'C:\project\celeba-dataset/processed2'   
 img_base_path = os.path.join(base_path, 'img_align_celeba') 
-target_img_path = os.path.join(base_path, 'processed')
+target_train_img_path = os.path.join(base_path, 'train')
+target_test_img_path = os.path.join(base_path, 'test')
+target_val_img_path = os.path.join(base_path, 'val')
 
-eval_list = np.loadtxt(os.path.join(base_path, 'list_eval_partition.csv'), 
+eval_list = np.loadtxt(os.path.join(base_path, 'list_eval_partition2.csv'), 
                        dtype=str, 
                        delimiter=',', 
                        skiprows=1)
@@ -76,13 +78,16 @@ for i, e in enumerate(eval_list):
     norm = cv2.normalize(crop.astype(np.float64), None, 0, 1, cv2.NORM_MINMAX)
     
     if int(e[1]) == 0: # Train
-        np.save(os.path.join(target_img_path, 'x_train', filename + '.npy'), resized)
-        np.save(os.path.join(target_img_path, 'y_train', filename + '.npy'), norm)
+        np.save(os.path.join(target_train_img_path, 'x_train', filename + '.npy'), resized)
+        cv2.imshow(resized)
+        cv2.show()
+        cv2.imwrite(os.path.join(target_train_img_path, 'x_train', filename + '.jpg'), resized)
+        break
+        np.save(os.path.join(target_train_img_path, 'y_train', filename + '.npy'), norm)
     elif int(e[1]) == 1: # Validation
-        np.save(os.path.join(target_img_path, 'x_val', filename + '.npy'), resized)
-        np.save(os.path.join(target_img_path, 'y_val', filename + '.npy'), norm)
+        np.save(os.path.join(target_val_img_path, 'x_val', filename + '.npy'), resized)
+        np.save(os.path.join(target_val_img_path, 'y_val', filename + '.npy'), norm)
     elif int(e[1]) == 2: # Test
-        np.save(os.path.join(target_img_path, 'x_test', filename + '.npy'), resized)
-        np.save(os.path.join(target_img_path, 'y_test', filename + '.npy'), norm)   
-
-
+        np.save(os.path.join(target_test_img_path, 'x_test', filename + '.npy'), resized)
+        np.save(os.path.join(target_test_img_path, 'y_test', filename + '.npy'), norm)   
+    break

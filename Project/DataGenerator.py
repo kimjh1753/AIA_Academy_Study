@@ -2,11 +2,13 @@ import numpy as np
 import keras
 import cv2, os
 
-class DataGenerator(keras.utils.Sequence):
-    'Generates data for Keras'
+# class DataGenerator(keras.utils.Sequence) => '클래스의 생성자 입니다. 클래스를 생성할 때 인자들을 받아옵니다. 
+# 클래스를 생성시 default값이 존재하지 않는이상 반드시 입력을 해주어야 하며, 클래스 생성과 동시에 작동하는 함수입니다.'
+class DataGenerator(keras.utils.Sequence): 
+    'Generates data for Keras' 
     def __init__(self, list_IDs, labels, batch_size=32, dim=(32,32,32), n_channels=1,
                  n_classes=10, shuffle=True):
-        'Initialization'
+        'Initialization' # ' 초기화 '
         self.dim = dim
         self.batch_size = batch_size
         self.labels = labels
@@ -16,24 +18,25 @@ class DataGenerator(keras.utils.Sequence):
         self.shuffle = shuffle
         self.on_epoch_end()
 
-    def __len__(self):
-        'Denotes the number of batches per epoch'
+    # def __len__(self) => 길이를 호출하는 함수, return값으로 길이를 반환
+    def __len__(self): 
+        'Denotes the number of batches per epoch' #  epoch 당 배치 수를 나타냅니다 '
         return int(np.floor(len(self.list_IDs) / self.batch_size))
 
-    def __getitem__(self, index):
-        'Generate one batch of data'
-        # Generate indexes of the batch
+    def __getitem__(self, index): # '실질적으로 배치를 반환하는 부분'
+        'Generate one batch of data' 
+        # Generate indexes of the batch 
         indexes = self.indexes[index*self.batch_size:(index+1)*self.batch_size]
 
-        # Find list of IDs
+        # Find list of IDs = IDs 의 리스트(목록) 찾기
         list_IDs_temp = [self.list_IDs[k] for k in indexes]
 
-        # Generate data
+        # Generate data = 데이터 생성
         X, y = self.__data_generation(list_IDs_temp)
 
         return X, y
 
-    def on_epoch_end(self):
+    def on_epoch_end(self): # '한 epoch을 수행한 후에 fit_generator함수 안에서 호출되는 함수'
         'Updates indexes after each epoch'
         self.indexes = np.arange(len(self.list_IDs))
         if self.shuffle == True:
