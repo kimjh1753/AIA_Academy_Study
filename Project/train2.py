@@ -37,31 +37,31 @@ plt.subplot(1, 2, 2)
 plt.imshow(x2)
 plt.show()
 
-train_gen = ImageDataGenerator(rescale=1./255)
-val_gen = ImageDataGenerator(rescale=1./255)
+# train_gen = ImageDataGenerator(rescale=1./255)
+# val_gen = ImageDataGenerator(rescale=1./255)
 
-xy_train = train_gen.flow_from_directory(
-                          '../PROJECT/celeba-dataset/processed2/train', 
-                          # labels=None, 
-                          batch_size=16, 
-                          target_size=(44,44), 
-                          # n_channels=3, 
-                          classes=None, 
-                          shuffle=True,
-                          subset='training')
+# xy_train = train_gen.flow_from_directory(
+#                           '../PROJECT/celeba-dataset/processed2/train', 
+#                           # labels=None, 
+#                           batch_size=16, 
+#                           target_size=(44,44), 
+#                           # n_channels=3, 
+#                           classes=None, 
+#                           shuffle=True,
+#                           subset='training')
 
-xy_val = val_gen.flow_from_directory(
-                        '../PROJECT/celeba-dataset/processed2/val',
-                        # labels=None,  
-                        batch_size=16, 
-                        target_size=(44,44), 
-                        # n_channels=3, 
-                        classes=None, 
-                        shuffle=False,
-                        subset='validation')
+# xy_val = val_gen.flow_from_directory(
+#                         '../PROJECT/celeba-dataset/processed2/val',
+#                         # labels=None,  
+#                         batch_size=16, 
+#                         target_size=(44,44), 
+#                         # n_channels=3, 
+#                         classes=None, 
+#                         shuffle=False,
+#                         subset='validation')
 
-# print(x_train_gen.shape, y_train_gen.shape)
-# print(x_val_gen.shape, y_val_gen.shape)
+# # print(x_train_gen.shape, y_train_gen.shape)
+# # print(x_val_gen.shape, y_val_gen.shape)
 
 upscale_factor = 4
 
@@ -98,90 +98,91 @@ model.summary()
 
 model.compile(loss='mse', optimizer='adam', metrics=['mae'])
 
-history = model.fit_generator(xy_train,
-                              validation_data=xy_val, 
-                              epochs=2, 
-                              verbose=1, 
-                              callbacks=[ModelCheckpoint(r'C:\PROJECT\celeba-dataset\models\model-1.h5', 
-                                                         monitor='val_loss', 
-                                                         verbose=1, 
-                                                         save_best_only=True)])
+# history = model.fit_generator(xy_train,
+#                               validation_data=xy_val, 
+#                               epochs=2, 
+#                               verbose=1, 
+#                               callbacks=[ModelCheckpoint(r'C:\PROJECT\celeba-dataset\models\model-1.h5', 
+#                                                          monitor='val_loss', 
+#                                                          verbose=1, 
+#                                                          save_best_only=True)])
 
-# loss = history.history['loss']
-# mae = history.history['mae']
+history = model.fit([x_train_list, y_train_list], epochs=2, verbose=1, validation_data=[x_val_list, y_val_list])
 
-# print("loss : ", loss[-1])  # loss :  0.0021746635902673006
-# print("mae : ", mae[-1])    # mae :  0.031368955969810486
+loss = history.history['loss']
+mae = history.history['mae']
 
-
-# base_path3 = r'C:\project\celeba-dataset\processed2\test'
-
-# x_test_list = sorted(glob.glob(os.path.join(base_path, 'x_test', '*.npy')))
-# y_test_list = sorted(glob.glob(os.path.join(base_path, 'y_test', '*.npy')))
-
-# # print(len(x_test_list), len(y_test_list))   # 5649 5649
-# # print(x_test_list[0])                       # C:\project\celeba-dataset\processed\x_test\024351.npy
+print("loss : ", loss[-1])  # loss :  0.0021746635902673006
+print("mae : ", mae[-1])    # mae :  0.031368955969810486
 
 
-# test_idx = 21
+base_path3 = r'C:\project\celeba-dataset\processed2\test'
 
-# # 저해상도 이미지(input)
-# x1_test = np.load(x_test_list[test_idx])
+x_test_list = sorted(glob.glob(os.path.join(base_path3, 'x_test', '*.npy')))
+y_test_list = sorted(glob.glob(os.path.join(base_path3, 'y_test', '*.npy')))
 
-# # 저해상도 이미지 확대시킨 이미지
-# x1_test_resized = pyramid_expand(x1_test, 
-#                                  4,
-#                                  multichannel=True) # multichannel=True -> 컬러채널 허용
+# print(len(x_test_list), len(y_test_list))   # 5649 5649
+# print(x_test_list[0])                       # C:\project\celeba-dataset\processed\x_test\024351.npy
 
-# # 정답 이미지
-# y1_test = np.load(y_test_list[test_idx])
+test_idx = 21
 
-# # 모델이 예측한 이미지(output)
-# y_pred = model.predict(x1_test.reshape((1, 44, 44, 3)))
+# 저해상도 이미지(input)
+x1_test = np.load(x_test_list[test_idx])
 
-# # print(x1_test.shape, y1_test.shape) # (44, 44, 3) (176, 176, 3)
+# 저해상도 이미지 확대시킨 이미지
+x1_test_resized = pyramid_expand(x1_test, 
+                                 4,
+                                 multichannel=True) # multichannel=True -> 컬러채널 허용
 
-# # unit8 = 데이터 행렬의 클래스가 uint8 인 이미지를 8 비트 이미지, 이미지 기능은 8 비트 이미지를 배정 밀도로 변환하지 않고 직접 표시 할 수 있습니다.
-# x1_test = (x1_test * 255).astype(np.uint8) 
-# x1_test_resized = (x1_test_resized * 255).astype(np.uint8)
-# y1_test = (y1_test * 255).astype(np.uint8)
-# y_pred = np.clip(y_pred.reshape((176, 176, 3)), 0, 1)
+# 모델이 예측한 이미지(output)
+y_pred = model.predict(x1_test.reshape((1, 44, 44, 3)))
 
-# # input 이미지
-# x1_test = cv2.cvtColor(x1_test, 
-#                        cv2.COLOR_BGR2RGB)
+# 정답 이미지
+y1_test = np.load(y_test_list[test_idx])
 
-# # input 이미지를 4배 확대한 이미지
-# x1_test_resized = cv2.cvtColor(x1_test_resized, 
-#                                cv2.COLOR_BGR2RGB)
+# print(x1_test.shape, y1_test.shape) # (44, 44, 3) (176, 176, 3)
 
-# # 원본 이미지
-# y1_test = cv2.cvtColor(y1_test, 
-#                        cv2.COLOR_BGR2RGB)
+# unit8 = 데이터 행렬의 클래스가 uint8 인 이미지를 8 비트 이미지, 이미지 기능은 8 비트 이미지를 배정 밀도로 변환하지 않고 직접 표시 할 수 있습니다.
+x1_test = (x1_test * 255).astype(np.uint8) 
+x1_test_resized = (x1_test_resized * 255).astype(np.uint8)
+y_pred = np.clip(y_pred.reshape((176, 176, 3)), 0, 1)
+y1_test = (y1_test * 255).astype(np.uint8)
 
-# # input 이미지로 예측한 이미지(저해상도 -> 고해상도)
-# y_pred = cv2.cvtColor(y_pred, 
-#                       cv2.COLOR_BGR2RGB)
+# input 이미지
+x1_test = cv2.cvtColor(x1_test, 
+                       cv2.COLOR_BGR2RGB)
 
-# plt.figure(figsize=(15, 10))
+# input 이미지를 4배 확대한 이미지
+x1_test_resized = cv2.cvtColor(x1_test_resized, 
+                               cv2.COLOR_BGR2RGB)
 
-# plt.subplot(1, 4, 1)
-# plt.title('input')
-# plt.imshow(x1_test)
+# input 이미지로 예측한 이미지(저해상도 -> 고해상도)
+y_pred = cv2.cvtColor(y_pred, 
+                      cv2.COLOR_BGR2RGB)
 
-# plt.subplot(1, 4, 2)
-# plt.title('resized')
-# plt.imshow(x1_test_resized)
+# 원본 이미지
+y1_test = cv2.cvtColor(y1_test, 
+                       cv2.COLOR_BGR2RGB)
 
-# plt.subplot(1, 4, 3)
-# plt.title('output')
-# plt.imshow(y_pred)
+plt.figure(figsize=(15, 10))
 
-# plt.subplot(1, 4, 4)
-# plt.title('groundtruth')
-# plt.imshow(y1_test)
+plt.subplot(1, 4, 1)
+plt.title('input')
+plt.imshow(x1_test)
 
-# plt.show()
+plt.subplot(1, 4, 2)
+plt.title('resized')
+plt.imshow(x1_test_resized)
+
+plt.subplot(1, 4, 3)
+plt.title('output')
+plt.imshow(y_pred)
+
+plt.subplot(1, 4, 4)
+plt.title('groundtruth')
+plt.imshow(y1_test)
+
+plt.show()
 
 # epochs = 2
 # loss :  0.0021746635902673006

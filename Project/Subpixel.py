@@ -19,6 +19,7 @@ from keras.layers import Conv2D
 	mkdir test_output
 	python keras_subpixel.py
 """
+
 # 클래스 Subpixel(Conv2D)로 선언
 class Subpixel(Conv2D):                                                                             
     # 클래스 기본 초기화

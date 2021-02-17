@@ -5,7 +5,7 @@ import cv2, os, glob
 import numpy as np
 import matplotlib.pyplot as plt
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from tensorflow.keras.layers import Input, Conv2D, Activation
+from tensorflow.keras.layers import Input, Conv2D, Activation, LeakyReLU
 from tensorflow.keras.models import Model
 from keras.callbacks import ModelCheckpoint
 from skimage.transform import pyramid_expand
@@ -14,14 +14,14 @@ from DataGenerator import DataGenerator
 
 base_path = r'C:\project\celeba-dataset\processed'
 
-x_train_list = sorted(glob.glob(os.path.join(base_path, 'x_train', '*.npy')))
-x_val_list = sorted(glob.glob(os.path.join(base_path, 'x_val', '*.npy')))
+x_train_list = sorted(glob.glob(os.path.join(base_path, 'x_train', '*.npy')))   # x_train폴더에 있는 npy파일들을 불러오는 코드
+x_val_list = sorted(glob.glob(os.path.join(base_path, 'x_val', '*.npy')))       # x_val폴더에 있는 npy파일들을 불러오는 코드
 
 print(len(x_train_list), len(x_val_list)) # 18650 5700
-print(x_train_list[0]) # C:\project\celeba-dataset\processed\x_train\000001.npy
+print(x_train_list[7]) # C:\project\celeba-dataset\processed\x_train\000001.npy
 
-x1 = np.load(x_train_list[0])
-x2 = np.load(x_val_list[0])
+x1 = np.load(x_train_list[7])
+x2 = np.load(x_val_list[7])
 
 print(x1.shape, x2.shape) # (44, 44, 3) (44, 44, 3)
 
@@ -29,8 +29,9 @@ plt.subplot(1, 2, 1)
 plt.imshow(x1)
 plt.subplot(1, 2, 2)
 plt.imshow(x2)
-plt.show()
+# plt.show()
 
+# DataGenerator 파라미터들은 DataGenerator.py에 안에 있는 def __init__ 함수 안에 있는 파라미터 사용
 train_gen = DataGenerator(list_IDs=x_train_list, 
                           labels=None, 
                           batch_size=16, 
@@ -52,45 +53,45 @@ upscale_factor = 4
 inputs = Input(shape=(44, 44, 3))
 
 a = Conv2D(filters=64, 
-             kernel_size=5, 
-             strides=1, 
-             padding='same', 
-             activation='relu')(inputs)
+           kernel_size=5, 
+           strides=1, 
+           padding='same', 
+           activation='linear')(inputs)
 
 a = Conv2D(filters=64, 
-             kernel_size=3, 
-             strides=1, 
-             padding='same', 
-             activation='relu')(a)
+           kernel_size=3, 
+           strides=1, 
+           padding='same', 
+           activation='linear')(a)
 
 a = Conv2D(filters=32, 
-             kernel_size=3, 
-             strides=1, 
-             padding='same', 
-             activation='relu')(a)
+           kernel_size=3, 
+           strides=1, 
+           padding='same', 
+           activation='linear')(a)
 
-a = Conv2D(filters=upscale_factor**2, 
-             kernel_size=3, 
-             strides=1, 
-             padding='same', 
-             activation='relu')(a)
+a = Conv2D(filters=16, # upscale_factor**2, 
+           kernel_size=3, 
+           strides=1, 
+           padding='same', 
+           activation='linear')(a)
 
 a = Subpixel(filters=3,
-               kernel_size=3, 
-               r=upscale_factor, 
-               padding='same')(a)
+             kernel_size=3, 
+             r=upscale_factor, # (44, 44, 3) -> (176, 176, 3) 
+             padding='same')(a)
 
-outputs = Activation('relu')(a)
+outputs = LeakyReLU(alpha=0.1)(a)
 
 model = Model(inputs=inputs, outputs=outputs)
 
 model.summary()
 
-model.compile(loss='mse', optimizer='adam', metrics=['mae'])
+model.compile(loss='mse', optimizer='adam', metrics=['mae']) # loss='mse'-> 이미지가 얼마나 같은지, 픽셀 값이 얼마나 같은지 확인하기 위해서 mse사용
 
 history = model.fit_generator(train_gen, 
                               validation_data=val_gen, 
-                              epochs=10, 
+                              epochs=2, 
                               verbose=1, 
                               callbacks=[ModelCheckpoint(r'C:\PROJECT\celeba-dataset\models\model.h5', 
                                                          monitor='val_loss', 
@@ -100,8 +101,8 @@ history = model.fit_generator(train_gen,
 loss = history.history['loss']
 mae = history.history['mae']
 
-print("loss : ", loss[-1])  # loss :  0.0021746635902673006
-print("mae : ", mae[-1])    # mae :  0.031368955969810486
+print("loss : ", loss[-1])  
+print("mae : ", mae[-1])    
 
 x_test_list = sorted(glob.glob(os.path.join(base_path, 'x_test', '*.npy')))
 y_test_list = sorted(glob.glob(os.path.join(base_path, 'y_test', '*.npy')))
@@ -133,46 +134,71 @@ x1_test_resized = (x1_test_resized * 255).astype(np.uint8)
 y1_test = (y1_test * 255).astype(np.uint8)
 y_pred = np.clip(y_pred.reshape((176, 176, 3)), 0, 1)
 
+# COLOR_BGR2RGB -> BGR 사진을 RGB 사진으로 변환, 
+#                  OpenCV에서는 BGR 순서로 저장하고 matplotlib에서는 RGB 순서로 저장이 되어서 변경해주는 역할
+
 # input 이미지
 x1_test = cv2.cvtColor(x1_test, 
-                       cv2.COLOR_BGR2RGB)
+                       cv2.COLOR_BGR2RGB) 
 
 # input 이미지를 4배 확대한 이미지
 x1_test_resized = cv2.cvtColor(x1_test_resized, 
                                cv2.COLOR_BGR2RGB)
 
-# 원본 이미지
-y1_test = cv2.cvtColor(y1_test, 
-                       cv2.COLOR_BGR2RGB)
-
 # input 이미지로 예측한 이미지(저해상도 -> 고해상도)
 y_pred = cv2.cvtColor(y_pred, 
                       cv2.COLOR_BGR2RGB)
+
+# 원본 이미지
+y1_test = cv2.cvtColor(y1_test, 
+                       cv2.COLOR_BGR2RGB)
 
 plt.figure(figsize=(15, 10))
 
 plt.subplot(1, 4, 1)
 plt.title('input')
-plt.imshow(x1_test)
+plt.imshow(x1_test, interpolation='bicubic')
 
 plt.subplot(1, 4, 2)
 plt.title('resized')
-plt.imshow(x1_test_resized)
+plt.imshow(x1_test_resized, interpolation='bicubic')
 
 plt.subplot(1, 4, 3)
 plt.title('output')
-plt.imshow(y_pred)
+plt.imshow(y_pred, interpolation='bicubic')
 
 plt.subplot(1, 4, 4)
 plt.title('groundtruth')
-plt.imshow(y1_test)
+plt.imshow(y1_test, interpolation='bicubic')
 
-plt.show()
+# plt.show()
 
-# epochs = 2
-# loss :  0.0021746635902673006
-# mae :  0.031368955969810486
+# epochs =2, activation = 'than'
+# loss :  0.0032980958931148052
+# mae :  0.041317906230688095
 
-# epochs = 10
+# epochs = 2, activation = 'than', LeakyReLU(alpha=0.1)
+# loss :  0.009930220432579517
+# mae :  0.05716190114617348
+
+
+# epochs = 10, activation = 'relu'
 # loss :  0.001615448622033
 # mae :  0.02607521042227745
+
+# Photo 10만장
+# epochs = 2, activation = 'relu'
+# loss :  0.0016763228923082352
+# mae :  0.026696009561419487
+
+# epochs = 2, activation = 'relu', LeakyReLU(alpha=0.1)
+# loss :  0.0016761336009949446
+# mae :  0.026643605902791023
+
+
+# epochs = 2, activation = 'linear'
+# loss :  0.0018620517803356051
+# mae :  0.027616102248430252
+
+# epochs = 2, activation = 'linear', LeakyReLU(alpha=0.1)
+ 

@@ -79,10 +79,6 @@ for i, e in enumerate(eval_list):
     
     if int(e[1]) == 0: # Train
         np.save(os.path.join(target_train_img_path, 'x_train', filename + '.npy'), resized)
-        cv2.imshow(resized)
-        cv2.show()
-        cv2.imwrite(os.path.join(target_train_img_path, 'x_train', filename + '.jpg'), resized)
-        break
         np.save(os.path.join(target_train_img_path, 'y_train', filename + '.npy'), norm)
     elif int(e[1]) == 1: # Validation
         np.save(os.path.join(target_val_img_path, 'x_val', filename + '.npy'), resized)

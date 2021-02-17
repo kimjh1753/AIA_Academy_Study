@@ -5,10 +5,10 @@ from skimage.transform import pyramid_reduce
 
 # 경로
 base_path = r'C:\project\celeba-dataset'   
-img_base_path = os.path.join(base_path, 'img_align_celeba') 
+img_base_path = os.path.join(base_path, 'img_align_celeba2') 
 target_img_path = os.path.join(base_path, 'processed')
 
-eval_list = np.loadtxt(os.path.join(base_path, 'list_eval_partition.csv'), 
+eval_list = np.loadtxt(os.path.join(base_path, 'list_eval_partition-final.csv'), 
                        dtype=str, 
                        delimiter=',', 
                        skiprows=1)
@@ -26,22 +26,24 @@ h, w, _ = img_sample.shape
 # 정사각형 이미지로 crop 해준다.
 crop_sample = img_sample[int((h-w)/2):int(-(h-w)/2), :]
 
-# 이미지를 4배만큼 축소하고 normalize 한다.
+# 이미지를 4배만큼 축소하고 normalize(정규화) 한다. ex) downscale=4 : 원본 사진 대비 4배 축소됨
 resized_sample = pyramid_reduce(crop_sample, 
                                 downscale=4,
                                 multichannel=True) # multichannel=True -> 컬러채널 허용
 
 pad = int((crop_sample.shape[0] - resized_sample.shape[0]) / 2)
 
-padded_sample = cv2.copyMakeBorder(resized_sample, 
-                                   top=pad, 
-                                   bottom=pad, 
-                                   left=pad, 
-                                   right=pad, 
-                                   borderType=cv2.BORDER_CONSTANT, 
-                                   value=(0,0,0))
+print(pad)
 
-print(crop_sample.shape, padded_sample.shape) # (178, 178, 3) (177, 177, 3)
+# padded_sample = cv2.copyMakeBorder(resized_sample, 
+#                                    top=pad, 
+#                                    bottom=pad, 
+#                                    left=pad, 
+#                                    right=pad, 
+#                                    borderType=cv2.BORDER_CONSTANT, 
+#                                    value=(0,0,0))
+
+print(crop_sample.shape) #, padded_sample.shape) # (178, 178, 3) (177, 177, 3)
 
 plt.figure(figsize=(12, 5))
 plt.subplot(1, 4, 1)
@@ -50,15 +52,15 @@ plt.subplot(1, 4, 2)
 plt.imshow(crop_sample)
 plt.subplot(1, 4, 3)
 plt.imshow(resized_sample)
-plt.subplot(1, 4, 4)
-plt.imshow(padded_sample)
+# plt.subplot(1, 4, 4)
+# plt.imshow(padded_sample)
 plt.show()
 
 # main
 downscale = 4
-n_train = 18650
-n_val = 5700
-n_test = 5649
+n_train = 80270
+n_val = 9965
+n_test = 9764
 
 for i, e in enumerate(eval_list):
     filename, ext = os.path.splitext(e[0])
@@ -69,12 +71,13 @@ for i, e in enumerate(eval_list):
     
     h, w, _ = img.shape
     
-    crop = img[int((h-w)/2):int(-(h-w)/2), :]
-    crop = cv2.resize(crop, dsize=(176,176))
+    crop = img[int((h-w)/2):int(-(h-w)/2), :] # 정사각형 이미지로 crop 해준다.
+    crop = cv2.resize(crop, dsize=(176,176)) # dsize=(176,176) : 결과 이미지 크기는 Tuple형을 사용하고 176, 176으로 변경
+    # 이미지를 4배만큼 축소하고 normalize(정규화) 한다. ex) downscale=4 : 원본 사진 대비 4배 축소됨
     resized = pyramid_reduce(crop, downscale=downscale, multichannel=True) # multichannel=True -> 컬러채널 허용
     
-    norm = cv2.normalize(crop.astype(np.float64), None, 0, 1, cv2.NORM_MINMAX)
-    
+    norm = cv2.normalize(crop.astype(np.float64), None, 0, 1, cv2.NORM_MINMAX) # -> 이미지를 0과 1 사이로 normalize(정규화)함
+     
     if int(e[1]) == 0: # Train
         np.save(os.path.join(target_img_path, 'x_train', filename + '.npy'), resized)
         np.save(os.path.join(target_img_path, 'y_train', filename + '.npy'), norm)

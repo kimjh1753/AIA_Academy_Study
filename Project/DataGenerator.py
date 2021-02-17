@@ -53,10 +53,12 @@ class DataGenerator(keras.utils.Sequence):
             # Store sample
             X[i] = np.load(ID)
 
-            splited = ID.split('\\')
-            splited[-2] = 'y' + splited[-2][1:] # x_train -> y_train
-            splited[0] = splited[0] + os.sep
-            y_path = os.path.join(os.sep, *splited)
+            # ex) C:\Project\celeba-dataset\processed\x_test 
+            splited = ID.split('\\') # -> ["C:", "Project", "celeba-dataset", "processed", "x_test"]
+            splited[-2] = 'y' + splited[-2][1:] 
+            # x_train -> y_train : 경로에서 마지막 2번째 "processed"에서 y로 시작하는 폴더에서 첫번째 행을 제외한 나머지를 가져와서 데이터 생성
+            splited[0] = splited[0] + os.sep # os.sep : pathname 분리기호 ('/' or '\')
+            y_path = os.path.join(os.sep, *splited) # 경로를 병합하여 새 경로 생성
 
             # Store class
             y[i] = np.load(y_path)

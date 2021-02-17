@@ -1,10 +1,9 @@
-import os
+import os, cv2, glob
 import numpy as np
 import matplotlib.pyplot as plt
-import cv2
-from PIL import Image
 from skimage.transform import pyramid_reduce
 
+# 경로
 base_path = r'C:\project\celeba-dataset/processed2'   
 img_base_path = os.path.join(base_path, 'img_align_celeba') 
 target_train_img_path = os.path.join(base_path, 'train')
@@ -21,10 +20,6 @@ print(eval_list[0]) # ['000001.jpg' '0']
 # 이미지 확인
 img_sample = cv2.imread(os.path.join(img_base_path, 
                                      eval_list[0][0]))
-
-
-plt.imshow(img_sample)
-plt.show()
 
 h, w, _ = img_sample.shape
 
@@ -48,7 +43,47 @@ padded_sample = cv2.copyMakeBorder(resized_sample,
                                    borderType=cv2.BORDER_CONSTANT, 
                                    value=(0,0,0))
 
+print(crop_sample.shape, padded_sample.shape) # (178, 178, 3) (177, 177, 3)
+
+plt.figure(figsize=(12, 5))
+plt.subplot(1, 4, 1)
+plt.imshow(img_sample)
+plt.subplot(1, 4, 2)
+plt.imshow(crop_sample)
+plt.subplot(1, 4, 3)
+plt.imshow(resized_sample)
+plt.subplot(1, 4, 4)
 plt.imshow(padded_sample)
 plt.show()
 
-cv2.imwrite('../Project/1.jpg', padded_sample)
+# main
+downscale = 4
+n_train = 18650
+n_val = 5700
+n_test = 5649
+
+for i, e in enumerate(eval_list):
+    filename, ext = os.path.splitext(e[0])
+    
+    img_path = os.path.join(img_base_path, e[0])
+    
+    img = cv2.imread(img_path)
+    
+    h, w, _ = img.shape
+    
+    crop = img[int((h-w)/2):int(-(h-w)/2), :]
+    crop = cv2.resize(crop, dsize=(176,176))
+    resized = pyramid_reduce(crop, downscale=downscale, multichannel=True) # multichannel=True -> 컬러채널 허용
+    
+    norm = cv2.normalize(crop.astype(np.float64), None, 0, 1, cv2.NORM_MINMAX)
+    
+    if int(e[1]) == 0: # Train
+        np.save(os.path.join(target_train_img_path, 'x_train', filename + '.jpg'), resized)
+        np.save(os.path.join(target_train_img_path, 'y_train', filename + '.jpg'), norm)
+    elif int(e[1]) == 1: # Validation
+        np.save(os.path.join(target_val_img_path, 'x_val', filename + '.jpg'), resized)
+        np.save(os.path.join(target_val_img_path, 'y_val', filename + '.jpg'), norm)
+    elif int(e[1]) == 2: # Test
+        np.save(os.path.join(target_test_img_path, 'x_test', filename + '.jpg'), resized)
+        np.save(os.path.join(target_test_img_path, 'y_test', filename + '.jpg'), norm)   
+    break
