@@ -6,7 +6,7 @@ import cv2, os
 # 클래스를 생성시 default값이 존재하지 않는이상 반드시 입력을 해주어야 하며, 클래스 생성과 동시에 작동하는 함수입니다.'
 class DataGenerator(keras.utils.Sequence): 
     'Generates data for Keras' 
-    def __init__(self, list_IDs, labels, batch_size=32, dim=(32,32,32), n_channels=1,
+    def __init__(self, list_IDs, labels, batch_size=32, dim=(32,32,32), n_channels=1, 
                  n_classes=10, shuffle=True):
         'Initialization' # ' 초기화 '
         self.dim = dim

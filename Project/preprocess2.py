@@ -1,6 +1,7 @@
 import os, cv2, glob
 import numpy as np
 import matplotlib.pyplot as plt
+from PIL import Image
 from skimage.transform import pyramid_reduce
 
 # 경로

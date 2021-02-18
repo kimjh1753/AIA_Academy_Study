@@ -1,6 +1,8 @@
 from keras import backend as K
 from keras.layers import Conv2D
 
+# https://github.com/atriumlts/subpixel/blob/master/keras_subpixel.py
+
 """
 	Subpixel Layer as a child class of Conv2D. This layer accepts all normal
 	arguments, with the exception of dilation_rate(). The argument r indicates

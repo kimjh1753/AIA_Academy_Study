@@ -31,29 +31,15 @@ resized_sample = pyramid_reduce(crop_sample,
                                 downscale=4,
                                 multichannel=True) # multichannel=True -> 컬러채널 허용
 
-pad = int((crop_sample.shape[0] - resized_sample.shape[0]) / 2)
+print(crop_sample.shape) # (178, 178, 3)
 
-print(pad)
-
-# padded_sample = cv2.copyMakeBorder(resized_sample, 
-#                                    top=pad, 
-#                                    bottom=pad, 
-#                                    left=pad, 
-#                                    right=pad, 
-#                                    borderType=cv2.BORDER_CONSTANT, 
-#                                    value=(0,0,0))
-
-print(crop_sample.shape) #, padded_sample.shape) # (178, 178, 3) (177, 177, 3)
-
-plt.figure(figsize=(12, 5))
-plt.subplot(1, 4, 1)
-plt.imshow(img_sample)
-plt.subplot(1, 4, 2)
-plt.imshow(crop_sample)
-plt.subplot(1, 4, 3)
-plt.imshow(resized_sample)
-# plt.subplot(1, 4, 4)
-# plt.imshow(padded_sample)
+plt.figure(figsize=(12, 5)) # 최초 창의 크기를 가로 12인치 세로 5인치로 설정
+plt.subplot(1, 3, 1)        # 1행 3열 중 첫번째
+plt.imshow(img_sample)      # 기존 이미지
+plt.subplot(1, 3, 2)        # 1행 3열 중 두번째
+plt.imshow(crop_sample)     # 기존 이미지를 정사각형으로 자른 이미지
+plt.subplot(1, 3, 3)        # 1행 3열 중 세번째
+plt.imshow(resized_sample)  # crop 이미지를 4배 축소한 이미지
 plt.show()
 
 # main
@@ -63,11 +49,11 @@ n_val = 9965
 n_test = 9764
 
 for i, e in enumerate(eval_list):
-    filename, ext = os.path.splitext(e[0])
+    filename, ext = os.path.splitext(e[0]) # os.path.splitext : 확장자만 따로 분류한다.(리스트로 나타낸다)
     
-    img_path = os.path.join(img_base_path, e[0])
+    img_path = os.path.join(img_base_path, e[0]) 
     
-    img = cv2.imread(img_path)
+    img = cv2.imread(img_path) # img_path에 있는 있는 이미지를 부른다.
     
     h, w, _ = img.shape
     
@@ -76,7 +62,7 @@ for i, e in enumerate(eval_list):
     # 이미지를 4배만큼 축소하고 normalize(정규화) 한다. ex) downscale=4 : 원본 사진 대비 4배 축소됨
     resized = pyramid_reduce(crop, downscale=downscale, multichannel=True) # multichannel=True -> 컬러채널 허용
     
-    norm = cv2.normalize(crop.astype(np.float64), None, 0, 1, cv2.NORM_MINMAX) # -> 이미지를 0과 1 사이로 normalize(정규화)함
+    norm = cv2.normalize(img.astype(np.float64), None, 0, 1, cv2.NORM_MINMAX) # -> 이미지를 0과 1 사이로 normalize(정규화)함
      
     if int(e[1]) == 0: # Train
         np.save(os.path.join(target_img_path, 'x_train', filename + '.npy'), resized)

@@ -51,47 +51,20 @@ val_gen = DataGenerator(list_IDs=x_val_list,
 upscale_factor = 4
 
 inputs = Input(shape=(44, 44, 3))
-
-a = Conv2D(filters=64, 
-           kernel_size=5, 
-           strides=1, 
-           padding='same', 
-           activation='linear')(inputs)
-
-a = Conv2D(filters=64, 
-           kernel_size=3, 
-           strides=1, 
-           padding='same', 
-           activation='linear')(a)
-
-a = Conv2D(filters=32, 
-           kernel_size=3, 
-           strides=1, 
-           padding='same', 
-           activation='linear')(a)
-
-a = Conv2D(filters=16, # upscale_factor**2, 
-           kernel_size=3, 
-           strides=1, 
-           padding='same', 
-           activation='linear')(a)
-
-a = Subpixel(filters=3,
-             kernel_size=3, 
-             r=upscale_factor, # (44, 44, 3) -> (176, 176, 3) 
-             padding='same')(a)
-
+a = Conv2D(filters=64, kernel_size=5, strides=1, padding='same', activation='relu')(inputs)
+a = Conv2D(filters=64, kernel_size=3, strides=1, padding='same', activation='relu')(a)
+a = Conv2D(filters=32, kernel_size=3, strides=1, padding='same', activation='relu')(a)
+a = Conv2D(filters=16, kernel_size=3, strides=1, padding='same', activation='relu')(a)
+a = Subpixel(filters=3,kernel_size=3, r=upscale_factor, padding='same')(a) # r=upscale_factor : (44, 44, 3) -> (176, 176, 3)
 outputs = LeakyReLU(alpha=0.1)(a)
-
 model = Model(inputs=inputs, outputs=outputs)
 
 model.summary()
 
 model.compile(loss='mse', optimizer='adam', metrics=['mae']) # loss='mse'-> 이미지가 얼마나 같은지, 픽셀 값이 얼마나 같은지 확인하기 위해서 mse사용
-
 history = model.fit_generator(train_gen, 
                               validation_data=val_gen, 
-                              epochs=2, 
+                              epochs=30, 
                               verbose=1, 
                               callbacks=[ModelCheckpoint(r'C:\PROJECT\celeba-dataset\models\model.h5', 
                                                          monitor='val_loss', 
@@ -131,62 +104,52 @@ y_pred = model.predict(x1_test.reshape((1, 44, 44, 3)))
 # unit8 = 데이터 행렬의 클래스가 uint8 인 이미지를 8 비트 이미지, 이미지 기능은 8 비트 이미지를 배정 밀도로 변환하지 않고 직접 표시 할 수 있습니다.
 x1_test = (x1_test * 255).astype(np.uint8) 
 x1_test_resized = (x1_test_resized * 255).astype(np.uint8)
-y1_test = (y1_test * 255).astype(np.uint8)
-y_pred = np.clip(y_pred.reshape((176, 176, 3)), 0, 1)
 
-# COLOR_BGR2RGB -> BGR 사진을 RGB 사진으로 변환, 
-#                  OpenCV에서는 BGR 순서로 저장하고 matplotlib에서는 RGB 순서로 저장이 되어서 변경해주는 역할
+y1_test = (y1_test * 255).astype(np.uint8)
+y_pred = np.clip(y_pred.reshape((176, 176, 3)), 0, 1) # ypred.reshape된 값을 0과 1 사이의 범위로 전환
+
 
 # input 이미지
 x1_test = cv2.cvtColor(x1_test, 
                        cv2.COLOR_BGR2RGB) 
+                         # COLOR_BGR2RGB -> BGR 사진을 RGB 사진으로 변환, OpenCV에서는 BGR 순서로 저장하고 matplotlib에서는 RGB 순서로 저장이 되어서 변경해주는 역할
 
 # input 이미지를 4배 확대한 이미지
 x1_test_resized = cv2.cvtColor(x1_test_resized, 
                                cv2.COLOR_BGR2RGB)
-
+                                 # COLOR_BGR2RGB -> BGR 사진을 RGB 사진으로 변환, OpenCV에서는 BGR 순서로 저장하고 matplotlib에서는 RGB 순서로 저장이 되어서 변경해주는 역할
+                                   
 # input 이미지로 예측한 이미지(저해상도 -> 고해상도)
 y_pred = cv2.cvtColor(y_pred, 
                       cv2.COLOR_BGR2RGB)
-
+                        # COLOR_BGR2RGB -> BGR 사진을 RGB 사진으로 변환, OpenCV에서는 BGR 순서로 저장하고 matplotlib에서는 RGB 순서로 저장이 되어서 변경해주는 역할
+                         
 # 원본 이미지
 y1_test = cv2.cvtColor(y1_test, 
                        cv2.COLOR_BGR2RGB)
-
+                         # COLOR_BGR2RGB -> BGR 사진을 RGB 사진으로 변환, OpenCV에서는 BGR 순서로 저장하고 matplotlib에서는 RGB 순서로 저장이 되어서 변경해주는 역할
+                           
 plt.figure(figsize=(15, 10))
 
-plt.subplot(1, 4, 1)
-plt.title('input')
+plt.subplot(1, 4, 1) # 1행 4열중 첫번째
+plt.title('input') # 저해상도 이미지
 plt.imshow(x1_test, interpolation='bicubic')
 
-plt.subplot(1, 4, 2)
-plt.title('resized')
+plt.subplot(1, 4, 2) # 1행 4열중 첫번째
+plt.title('resized') # input 이미지를 강제로 4배 늘린 이미지
 plt.imshow(x1_test_resized, interpolation='bicubic')
 
-plt.subplot(1, 4, 3)
-plt.title('output')
+plt.subplot(1, 4, 3) # 1행 4열중 첫번째
+plt.title('output') # input 이미지를 Subpixel을 통해 예측한 이미지
 plt.imshow(y_pred, interpolation='bicubic')
 
-plt.subplot(1, 4, 4)
-plt.title('groundtruth')
+plt.subplot(1, 4, 4) # 1행 4열중 첫번째
+plt.title('groundtruth') # 원본 이미지
 plt.imshow(y1_test, interpolation='bicubic')
 
-# plt.show()
+plt.show()
 
-# epochs =2, activation = 'than'
-# loss :  0.0032980958931148052
-# mae :  0.041317906230688095
-
-# epochs = 2, activation = 'than', LeakyReLU(alpha=0.1)
-# loss :  0.009930220432579517
-# mae :  0.05716190114617348
-
-
-# epochs = 10, activation = 'relu'
-# loss :  0.001615448622033
-# mae :  0.02607521042227745
-
-# Photo 10만장
+# activation 별로 비교
 # epochs = 2, activation = 'relu'
 # loss :  0.0016763228923082352
 # mae :  0.026696009561419487
@@ -201,4 +164,19 @@ plt.imshow(y1_test, interpolation='bicubic')
 # mae :  0.027616102248430252
 
 # epochs = 2, activation = 'linear', LeakyReLU(alpha=0.1)
- 
+# loss :  0.006469338666647673
+# mae :  0.036886803805828094 
+
+
+# epochs =2, activation = 'tanh'
+# loss :  0.0026562961284071207
+# mae :  0.036763615906238556
+
+# epochs = 2, activation = 'than', LeakyReLU(alpha=0.1)
+# loss :  0.0027720301877707243
+# mae :  0.03674674406647682
+
+# 최종 
+# epochs = 30, activation = 'relu', LeakyReLU(alpha=0.1)
+# loss :  0.0012984503991901875
+# mae :  0.022568069398403168
