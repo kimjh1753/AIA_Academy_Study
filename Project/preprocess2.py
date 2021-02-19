@@ -5,8 +5,8 @@ from PIL import Image
 from skimage.transform import pyramid_reduce
 
 # 경로
-base_path = r'C:\project\celeba-dataset/processed2'   
-img_base_path = os.path.join(base_path, 'img_align_celeba') 
+base_path = r'C:\project\celeba-dataset\processed2'   
+img_base_path = os.path.join(base_path, 'img') 
 target_train_img_path = os.path.join(base_path, 'train')
 target_test_img_path = os.path.join(base_path, 'test')
 target_val_img_path = os.path.join(base_path, 'val')
@@ -34,27 +34,15 @@ resized_sample = pyramid_reduce(crop_sample,
                                 downscale=4,
                                 multichannel=True) # multichannel=True -> 컬러채널 허용
 
-pad = int((crop_sample.shape[0] - resized_sample.shape[0]) / 2)
-
-padded_sample = cv2.copyMakeBorder(resized_sample, 
-                                   top=pad, 
-                                   bottom=pad, 
-                                   left=pad, 
-                                   right=pad, 
-                                   borderType=cv2.BORDER_CONSTANT, 
-                                   value=(0,0,0))
-
-print(crop_sample.shape, padded_sample.shape) # (178, 178, 3) (177, 177, 3)
+print(crop_sample.shape) # (178, 178, 3)
 
 plt.figure(figsize=(12, 5))
-plt.subplot(1, 4, 1)
+plt.subplot(1, 3, 1)
 plt.imshow(img_sample)
-plt.subplot(1, 4, 2)
+plt.subplot(1, 3, 2)
 plt.imshow(crop_sample)
-plt.subplot(1, 4, 3)
+plt.subplot(1, 3, 3)
 plt.imshow(resized_sample)
-plt.subplot(1, 4, 4)
-plt.imshow(padded_sample)
 plt.show()
 
 # main
@@ -88,3 +76,24 @@ for i, e in enumerate(eval_list):
         np.save(os.path.join(target_test_img_path, 'x_test', filename + '.npy'), resized)
         np.save(os.path.join(target_test_img_path, 'y_test', filename + '.npy'), norm)   
     break
+
+x_train_path = '../project/celeba-dataset/processed/x_train/'
+second_path = '.npy'
+train_list = []
+
+for i in range(1, 80270):
+    i = '{0:06d}'.format(i)
+    train_path = x_train_path + i + second_path
+    # print(x_train_path.format(train_path))
+    a = np.load(train_path)
+    train_list.append(a)
+x_tarin = np.array(train_list).reshape(-1,44,44,1)
+train_list = np.save(x_train_path, arr=train_list)
+
+x_train = np.load('../project/celeba-dataset/processed/x_train/a.npy')
+print(x_train.shape)
+
+
+
+
+

@@ -8,7 +8,7 @@ base_path = r'C:\project\celeba-dataset'
 img_base_path = os.path.join(base_path, 'img_align_celeba2') 
 target_img_path = os.path.join(base_path, 'processed')
 
-eval_list = np.loadtxt(os.path.join(base_path, 'list_eval_partition-final.csv'), 
+eval_list = np.loadtxt(os.path.join(base_path, 'list_eval_partition.csv'), 
                        dtype=str, 
                        delimiter=',', 
                        skiprows=1)
@@ -44,16 +44,16 @@ plt.show()
 
 # main
 downscale = 4
-n_train = 80270
-n_val = 9965
-n_test = 9764
+n_train = 18650
+n_val = 5700
+n_test = 5649
 
 for i, e in enumerate(eval_list):
     filename, ext = os.path.splitext(e[0]) # os.path.splitext : 확장자만 따로 분류한다.(리스트로 나타낸다)
     
     img_path = os.path.join(img_base_path, e[0]) 
     
-    img = cv2.imread(img_path) # img_path에 있는 있는 이미지를 부른다.
+    img = cv2.imread(img_path, cv2.IMREAD_COLOR) # img_path에 있는 있는 이미지를 부른다.
     
     h, w, _ = img.shape
     
@@ -62,7 +62,7 @@ for i, e in enumerate(eval_list):
     # 이미지를 4배만큼 축소하고 normalize(정규화) 한다. ex) downscale=4 : 원본 사진 대비 4배 축소됨
     resized = pyramid_reduce(crop, downscale=downscale, multichannel=True) # multichannel=True -> 컬러채널 허용
     
-    norm = cv2.normalize(img.astype(np.float64), None, 0, 1, cv2.NORM_MINMAX) # -> 이미지를 0과 1 사이로 normalize(정규화)함
+    norm = cv2.normalize(crop.astype(np.float64), None, 0, 1, cv2.NORM_MINMAX) # -> 이미지를 0과 1 사이로 normalize(정규화)함
      
     if int(e[1]) == 0: # Train
         np.save(os.path.join(target_img_path, 'x_train', filename + '.npy'), resized)
@@ -72,6 +72,5 @@ for i, e in enumerate(eval_list):
         np.save(os.path.join(target_img_path, 'y_val', filename + '.npy'), norm)
     elif int(e[1]) == 2: # Test
         np.save(os.path.join(target_img_path, 'x_test', filename + '.npy'), resized)
-        np.save(os.path.join(target_img_path, 'y_test', filename + '.npy'), norm)   
-
+        np.save(os.path.join(target_img_path, 'y_test', filename + '.npy'), norm)
 
