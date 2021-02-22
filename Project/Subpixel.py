@@ -1,4 +1,5 @@
 from keras import backend as K
+# Keras는 텐서 곱셈, 합성 곱 등의 저수준의 연산을 제공하지 않고 대신 Keras의 "백엔드 엔진"역할을하는 특수하고 잘 최적화 된 텐서 라이브러리를 사용
 from keras.layers import Conv2D
 
 # https://github.com/atriumlts/subpixel/blob/master/keras_subpixel.py
@@ -60,13 +61,15 @@ class Subpixel(Conv2D):
             **kwargs)
         self.r = r
 
+    # r^2 channels로 만들어진 feature map들을 순서대로 배치하는 부분
     def _phase_shift(self, I):
         r = self.r
         bsize, a, b, c = I.get_shape().as_list()
         bsize = K.shape(I)[0] # Handling Dimension(None) type for undefined batch dim
         X = K.reshape(I, [bsize, a, b, int(c/(r*r)),r, r]) # bsize, a, b, c/(r*r), r, r
-        X = K.permute_dimensions(X, (0, 1, 2, 5, 4, 3))  # bsize, a, b, r, r, c/(r*r)
+        X = K.permute_dimensions(X, (0, 1, 2, 5, 4, 3))  # bsize, a, b, r, r, c/(r*r)  permute_dimensions : 텐서의 축을 치환합니다. 
         #Keras backend does not support tf.split, so in future versions this could be nicer
+        #케라스 백엔드는 tf.split를 지원하지 않습니다, 그래서 향후 버전에서는 더 좋아질 수 있습니다.
         X = [X[:,i,:,:,:,:] for i in range(a)] # a, [bsize, b, r, r, c/(r*r)
         X = K.concatenate(X, 2)  # bsize, b, a*r, r, c/(r*r)
         X = [X[:,i,:,:,:] for i in range(b)] # b, [bsize, r, r, c/(r*r)
@@ -82,8 +85,6 @@ class Subpixel(Conv2D):
 
     def get_config(self):
         config = super(Conv2D, self).get_config()
-        # config.pop('rank')
-        # config.pop('dilation_rate')
         config['filters'] = int(config['filters'] / (self.r*self.r))
         config['r'] = self.r
         return config

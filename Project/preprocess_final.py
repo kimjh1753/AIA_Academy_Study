@@ -13,23 +13,21 @@ eval_list = np.loadtxt(os.path.join(base_path, 'list_eval_partition.csv'),
                        delimiter=',', 
                        skiprows=1)
 
-print(eval_list[0]) # ['000001.jpg' '0']
+print(eval_list[1]) # ['000002.jpg' '0']
 
 # 이미지 확인
 img_sample = cv2.imread(os.path.join(img_base_path, 
-                                     eval_list[0][0]))
+                                     eval_list[1]))
 
 h, w, _ = img_sample.shape
-
-#이미지 전처리
 
 # 정사각형 이미지로 crop 해준다.
 crop_sample = img_sample[int((h-w)/2):int(-(h-w)/2), :]
 
-# 이미지를 4배만큼 축소하고 normalize(정규화) 한다. ex) downscale=4 : 원본 사진 대비 4배 축소됨
+# 이미지를 4배만큼 축소하고 normalize(정규화) 한다(pyramid_reduce를 통해 작업). 
 resized_sample = pyramid_reduce(crop_sample, 
-                                downscale=4,
-                                multichannel=True) # multichannel=True -> 컬러채널 허용
+                                downscale=4,        # ex) downscale=4 : 원본 사진 대비 4배 축소됨       
+                                multichannel=True)  # multichannel=True -> 컬러채널 허용
 
 print(crop_sample.shape) # (178, 178, 3)
 
@@ -42,7 +40,7 @@ plt.subplot(1, 3, 3)        # 1행 3열 중 세번째
 plt.imshow(resized_sample)  # crop 이미지를 4배 축소한 이미지
 plt.show()
 
-# main
+#이미지 전처리
 downscale = 4
 n_train = 162770
 n_val = 19867
@@ -65,17 +63,17 @@ for i, e in enumerate(eval_list):
     norm = cv2.normalize(crop.astype(np.float64), None, 0, 1, cv2.NORM_MINMAX) # -> 이미지를 0과 1 사이로 normalize(정규화)함
      
     if int(e[1]) == 0: # Train
-        np.save(os.path.join(target_img_path, 'x_train', filename + '.npy'), resized)
-        np.save(os.path.join(target_img_path, 'y_train', filename + '.npy'), norm)
+        np.save(os.path.join(target_img_path, 'x_train', filename + '.npy'), resized)   # 저해상도 이미지 저장
+        np.save(os.path.join(target_img_path, 'y_train', filename + '.npy'), norm)      # 원본 이미지 저장      
     elif int(e[1]) == 1: # Validation
-        np.save(os.path.join(target_img_path, 'x_val', filename + '.npy'), resized)
-        np.save(os.path.join(target_img_path, 'y_val', filename + '.npy'), norm)
+        np.save(os.path.join(target_img_path, 'x_val', filename + '.npy'), resized)     # 저해상도 이미지 저장
+        np.save(os.path.join(target_img_path, 'y_val', filename + '.npy'), norm)        # 원본 이미지 저장
     elif int(e[1]) == 2: # Test
-        np.save(os.path.join(target_img_path, 'x_test', filename + '.npy'), resized)
-        np.save(os.path.join(target_img_path, 'y_test', filename + '.npy'), norm)
+        np.save(os.path.join(target_img_path, 'x_test', filename + '.npy'), resized)    # 저해상도 이미지 저장
+        np.save(os.path.join(target_img_path, 'y_test', filename + '.npy'), norm)       # 원본 이미지 저장
+'''
 
-
-# npy파일들 한파일로 합치기(위에서 npy 파일들 다 저장한 후 작업 실행 -> x_train, y_train, x_val, y_val, x_test, y_test 순으로 npy 파일 하나로 저장 함)
+# npy파일들 한파일로 합치기(위에서 npy 파일들 다 저장한 후 작업 실행 -> x_train, y_train, x_val, y_val, x_test, y_test 순으로 npy 파일을 하나로 저장 함)
 # ============================================================================================================= 
     
 # x_train_path = '../project/celeba-dataset/processed/x_train/'
@@ -164,20 +162,20 @@ for i, e in enumerate(eval_list):
 
 # ===================================================================
 
-# y_test_path = '../project/celeba-dataset/processed/y_test/'
-# second_path = '.npy'
-# test_list = []
+y_test_path = '../project/celeba-dataset/processed/y_test/'
+second_path = '.npy'
+test_list = []
 
-# for i in range(182638, 183638):
-#     i = '{0:06d}'.format(i)
-#     test_path = y_test_path + i + second_path
-#     a = np.load(test_path)
-#     test_list.append(a)
-# y_test = np.array(test_list).reshape(-1,176,176,3)
-# np.save(y_test_path, arr=y_test)
+for i in range(182638, 183638):
+    i = '{0:06d}'.format(i)
+    test_path = y_test_path + i + second_path
+    a = np.load(test_path)
+    test_list.append(a)
+y_test = np.array(test_list).reshape(-1,176,176,3)
+np.save(y_test_path, arr=y_test)
 
-# y_test = np.load('../project/celeba-dataset/processed/y_test/y_test.npy')
-# print(y_test.shape) # (1000, 176, 176, 3)
+y_test = np.load('../project/celeba-dataset/processed/y_test/y_test.npy')
+print(y_test.shape) # (1000, 176, 176, 3)
 
 
 
