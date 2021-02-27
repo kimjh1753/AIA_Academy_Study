@@ -64,8 +64,8 @@ transforms_test = transforms.Compose([
 trainset = MnistDataset('../study/dacon/data-2/dirty_mnist_2nd/', '../study/dacon/data-2/dirty_mnist_2nd_answer.csv', transforms_train)
 testset = MnistDataset('../study/dacon/data-2/test_dirty_mnist_2nd/', '../study/dacon/data-2/sample_submission.csv', transforms_test)
 
-train_loader = DataLoader(trainset, batch_size=128, num_workers=0)
-test_loader = DataLoader(testset, batch_size=32, num_workers=0)
+train_loader = DataLoader(trainset, batch_size=64, num_workers=0)
+test_loader = DataLoader(testset, batch_size=64, num_workers=0)
 
 class MnistModel(nn.Module):
     def __init__(self) -> None:
@@ -86,7 +86,7 @@ print(summary(model, input_size=(1, 3, 128, 128), verbose=1))
 optimizer = optim.Adam(model.parameters(), lr=1e-3)
 criterion = nn.MultiLabelSoftMarginLoss()
 
-num_epochs = 200
+num_epochs = 300
 model.train()
 
 for epoch in range(num_epochs):

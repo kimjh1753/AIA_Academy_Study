@@ -157,9 +157,9 @@ class MultiLabelResnet(nn.Module):
         # softmax가 아닌 sigmoid를 적용
         x = torch.sigmoid(self.FC(x))
         return x
+
 # 모델 선언
 model = MultiLabelResnet()
-model
 
 # cross validation을 적용하기 위해 KFold 생성
 from sklearn.model_selection import KFold
@@ -211,7 +211,7 @@ for fold_index, (trn_idx, val_idx) in enumerate(kfold.split(dirty_mnist_answer),
                                                 gamma = 0.75)
     criterion = torch.nn.BCELoss()
 
-    # 훈련 시작
+     # 훈련 시작
     valid_acc_max = 0
     for epoch in range(1):
         # 1개 epoch 훈련
@@ -309,8 +309,8 @@ for fold_index, (trn_idx, val_idx) in enumerate(kfold.split(dirty_mnist_answer),
 
     # 폴드별로 가장 좋은 모델 저장
     best_models.append(best_model)
-'''
-    # gpu에 올라가 있는 tensor -> cpu로 이동 -> numpy array로 변환
+
+# gpu에 올라가 있는 tensor -> cpu로 이동 -> numpy array로 변환
 sample_images = images.cpu().detach().numpy()
 sample_prob = probs
 sample_labels = labels
@@ -376,4 +376,4 @@ sample_submission = pd.read_csv("../study/dacon/data-2/sample_submission.csv")
 sample_submission.iloc[:,1:] = predictions_mean
 sample_submission.to_csv("../study/dacon/data-2/baseline_prediction.csv", index = False)
 print(sample_submission)
-'''
+
