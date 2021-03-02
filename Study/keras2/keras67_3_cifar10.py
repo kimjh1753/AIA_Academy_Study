@@ -58,5 +58,5 @@ val_loss = history.history['val_loss']
 
 # 4. 평가, 예측
 print("acc : ", acc[-1])
-# acc :  0.5687500238418579
+# acc :  0.09889999777078629
 print("val_acc : ", val_acc[:-1])
