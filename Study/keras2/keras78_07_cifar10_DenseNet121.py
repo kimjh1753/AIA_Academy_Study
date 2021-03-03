@@ -64,4 +64,5 @@ print("acc : ", acc)
 # acc :  0.5156999826431274
 
 # keras cifar10 DenseNet121 + cnn
-
+# loss :  1.9061119556427002
+# acc :  0.6521000266075134

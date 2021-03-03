@@ -52,7 +52,7 @@ model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc']
 
 from tensorflow.keras.callbacks import EarlyStopping
 es = EarlyStopping(monitor='loss', patience=30, mode='auto')
-model.fit(x_train, y_train, epochs=10, batch_size=64, validation_split=0.2, verbose=1, callbacks=[es])
+model.fit(x_train, y_train, epochs=100, batch_size=64, validation_split=0.2, verbose=1, callbacks=[es])
 
 # 4. 평가, 예측
 loss, acc = model.evaluate(x_test, y_test, batch_size=1)
@@ -64,5 +64,5 @@ print("acc : ", acc)
 # acc :  0.5156999826431274
 
 # keras cifar10 EfficientB0 + cnn
-# loss :  2.3026108741760254
+# loss :  2.3025617599487305
 # acc :  0.10000000149011612
