@@ -30,7 +30,8 @@ hypothesis = tf.matmul(x, w) + b
 
 cost = tf.reduce_mean(tf.square(hypothesis - y))
 
-train = tf.train.GradientDescentOptimizer(learning_rate=0.01).minimize(cost)
+# train = tf.train.GradientDescentOptimizer(learning_rate=0.01).minimize(cost)
+train = tf.train.AdamOptimizer(learning_rate=0.01).minimize(cost)
 
 with tf.Session() as sess:
     sess.run(tf.compat.v1.global_variables_initializer())
@@ -43,4 +44,4 @@ with tf.Session() as sess:
 
     print('R2 : ', r2_score(y_test, sess.run(hypothesis, feed_dict={x:x_test})))
 
-# R2 :  0.6323519587895157    
+# R2 :  0.6198609466660099   

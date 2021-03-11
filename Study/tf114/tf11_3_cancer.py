@@ -3,6 +3,7 @@ import tensorflow as tf
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
+tf.set_random_seed(66)
 
 dataset = load_breast_cancer()
 x_data = dataset.data
@@ -43,7 +44,7 @@ with tf.Session() as sess:
     for step in range(5001):
         cost_val, _ = sess.run([cost, train], feed_dict={x:x_train, y:y_train})
 
-        if step % 50 == 0:
+        if step % 10 == 0:
             print(step, cost_val)
 
     h, c, a = sess.run([hypothesis, predicted, accuracy],
@@ -51,5 +52,5 @@ with tf.Session() as sess:
     print(" 예측 값 : ", '\n', h, '\n', "원래 값 : ", '\n', c, '\n', "Accuracy : ", a)
     print(" Accuracy : ", accuracy_score(y_test, sess.run(predicted, feed_dict={x:x_test})))
 
-#  Accuracy :  0.95614034
-#  Accuracy :  0.956140350877193
+#  Accuracy :  0.9736842
+#  Accuracy :  0.9736842105263158
