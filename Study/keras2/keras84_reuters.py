@@ -4,7 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 (x_train, y_train), (x_test, y_test) = reuters.load_data(
-    num_words = 30000, test_split = 0.2 
+    num_words = 1000, test_split = 0.2 
   # num_words = 불러올 단어수 설정
 )
 
@@ -62,6 +62,16 @@ print(len(index_to_word))   # 30979
 print(x_train[0])
 print(' '.join([index_to_word[index] for index in x_train[0]]))
 
+# y 카테고리 갯수 출력
+category = np.max(y_train) + 1
+print("y 카테고리 개수 : ", category) # y 카테고리 개수 :  46
+
+# y의 유니크한 값 출력
+y_bunpo = np.unique(y_train) 
+print(y_bunpo)
+
+####################################### 전처리 ##############################################################
+
 # 1. 데이터
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 x_train = pad_sequences(x_train, maxlen=100)
@@ -79,7 +89,7 @@ print(y_train.shape, y_test.shape) # (8982, 46) (2246, 46)
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense, Flatten, Embedding
 model = Sequential()
-model.add(Embedding(input_dim=30000, output_dim=120, input_length=100))
+model.add(Embedding(input_dim=1000, output_dim=120))
 model.add(LSTM(120))
 model.add(Dense(46, activation='softmax'))
 model.summary()
@@ -87,17 +97,18 @@ model.summary()
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
 
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
-es = EarlyStopping(monitor='loss', patience=30, verbose=1)
-rl = ReduceLROnPlateau(monitor='loss', patience=15, verbose=1)
+es = EarlyStopping(monitor='val_loss', mode='min', patience=4, verbose=1)
+rl = ReduceLROnPlateau(monitor='val_loss', mode='min', patience=2, verbose=1)
 
-model.fit(x_train, y_train, batch_size=64, epochs=1000, callbacks=[es, rl])
+model.fit(x_train, y_train, batch_size=64, epochs=1000, validation_split=0.2, callbacks=[es, rl])
 
 result = model.evaluate(x_test, y_test)
 print("loss : ", result[0]) 
 print("acc : ", result[1])
 
-# loss :  2.4889166355133057
-# acc :  0.6852181553840637
+# epochs = 30
+# loss :  1.2671891450881958
+# acc :  0.7101513743400574
 
 
 

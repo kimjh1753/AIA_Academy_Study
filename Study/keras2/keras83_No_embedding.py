@@ -31,6 +31,7 @@ print(pad_x.shape) # (13, 5, 1)
 
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Embedding, Dense, LSTM, Flatten, Conv1D
+from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 
 # 임베딩 레이어를 빼고 모델 구성
 model = Sequential()
@@ -44,7 +45,10 @@ model.add(Dense(1, activation='sigmoid'))
 model.summary()
 
 model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['acc'])
-model.fit(pad_x, labels, epochs=100)
+
+es = EarlyStopping(monitor='val_loss', patience=30, verbose=1)
+rl = ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=15, verbose=1)
+model.fit(pad_x, labels, epochs=1000, validation_split=0.2, callbacks=[es, rl])
 
 acc = model.evaluate(pad_x, labels)[1]
 print("acc : ", acc)

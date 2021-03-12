@@ -41,5 +41,11 @@ model.summary()
 model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['acc'])
 model.fit(pad_x, labels, epochs=100)
 
+loss = model.evaluate(pad_x, labels)[0]
 acc = model.evaluate(pad_x, labels)[1]
-print(acc)
+
+print("loss : ", loss)
+print("acc : ", acc)
+
+# loss :  0.2210298329591751
+# acc :  1.0
