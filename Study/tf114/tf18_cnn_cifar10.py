@@ -88,7 +88,7 @@ optimizer = tf.compat.v1.train.AdamOptimizer(learning_rate=0.000089).minimize(lo
 
 # 훈련
 
-training_epochs = 20
+training_epochs = 30
 batch_size = 100
 total_batch = int(len(x_train)/batch_size) # 60000 / 100 = 600
 print(total_batch)
