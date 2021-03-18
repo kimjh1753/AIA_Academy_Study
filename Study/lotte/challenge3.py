@@ -36,7 +36,7 @@ x_pred = preprocess_input(x_pred)
 
 x_train, x_valid, y_train, y_valid = train_test_split(x, y, train_size = 0.8, shuffle = True, random_state=66)
 
-train_generator = idg.flow(x_train,y_train,batch_size=32)
+train_generator = idg.flow(x_train,y_train,batch_size=128)
 # seed => random_state
 valid_generator = idg2.flow(x_valid,y_valid)
 test_generator = x_pred
@@ -70,5 +70,5 @@ result = model.predict(test_generator,verbose=True)
 print(result.shape)
 sub = pd.read_csv('../study/LPD_COMPETITION/sample.csv')
 sub['prediction'] = np.argmax(result,axis = 1)
-sub.to_csv('../study/LPD_COMPETITION/answer2.csv',index=False)
+sub.to_csv('../study/LPD_COMPETITION/answer3.csv',index=False)
 
