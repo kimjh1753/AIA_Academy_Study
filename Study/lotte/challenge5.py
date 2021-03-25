@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import tensorflow as tf
+from scipy import stats
 from tensorflow import keras
 from keras.preprocessing.image import ImageDataGenerator
 from keras import Sequential
@@ -33,32 +34,28 @@ idg = ImageDataGenerator(
     shear_range=0.2
 ) 
 
-idg2 = ImageDataGenerator(
-    width_shift_range=(-1,1),   
-    height_shift_range=(-1,1),  
-    shear_range=0.2
-)
+idg2 = ImageDataGenerator()
 
 # y = np.argmax(y, axis=1)
 
 x = preprocess_input(x) 
 x_pred = preprocess_input(x_pred) 
 
-x_train, x_valid, y_train, y_valid = train_test_split(x, y, train_size = 0.8, shuffle = True, random_state=49)
+x_train, x_valid, y_train, y_valid = train_test_split(x, y, train_size = 0.9, shuffle = True, random_state=49)
 
-train_generator = idg.flow(x_train, y_train, batch_size=64, seed=48)
+train_generator = idg.flow(x_train, y_train, batch_size=32, seed=48)
 # seed => random_state
-valid_generator = idg2.flow(x_valid, y_valid, batch_size=64, seed=48)
-test_generator = idg2.flow(x_pred, batch_size=64, seed=48)
+valid_generator = idg2.flow(x_valid, y_valid, batch_size=32, seed=48)
+test_generator = x_pred
 
 from tensorflow.keras import regularizers
 from tensorflow.keras.models import Model, Sequential, load_model
 from tensorflow.keras.layers import GlobalAveragePooling2D, Flatten, BatchNormalization, Dense, Activation, Dropout, Conv2D
-# EfficientNetB5 = EfficientNetB5(include_top=False, weights='imagenet', input_shape=x_train.shape[1:])
-# EfficientNetB5.trainable = True
+# EfficientNetB4 = EfficientNetB4(include_top=False, weights='imagenet', input_shape=x_train.shape[1:])
+# EfficientNetB4.trainable = True
 # model = Sequential()
-# model.add(EfficientNetB5)
-# model.add(Conv2D(1000, 1, padding='same', activation='swish', 
+# model.add(EfficientNetB4)
+# model.add(Conv2D(10, 1, padding='same', activation='swish', input_shape=(64, 64, 3),
 #            kernel_regularizer=regularizers.l2(1e-5),        # 1e-5 
 #            activity_regularizer=regularizers.l1(1e-5)))     # 1e-5
 # model.add(GlobalAveragePooling2D())
@@ -74,24 +71,27 @@ from tensorflow.keras.layers import GlobalAveragePooling2D, Flatten, BatchNormal
 # # 3. 컴파일 훈련
 # from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
 # # mc1 = tf.train.latest_checkpoint()
-# mc = ModelCheckpoint('../study/LPD_COMPETITION/h5/challenge21.hdf5', save_only_true=True, verbose=1)
+# mc = ModelCheckpoint('../study/LPD_COMPETITION/h5/challenge99.hdf5', save_only_true=True, verbose=1)
 # es = EarlyStopping(patience=30)
 # reduce_lr = ReduceLROnPlateau(patience=15, factor=0.5)
 
-# model.fit_generator(train_generator, epochs=200, validation_data=valid_generator, 
+# model.fit_generator(train_generator, epochs=10, validation_data=valid_generator, 
 #                     callbacks=[es, reduce_lr, mc], steps_per_epoch= len(x_train) / 64)
 
-# model.load_weights('../study/LPD_COMPETITION/h5/challenge21.hdf5')
-model = load_model('../study/LPD_COMPETITION/h5/challenge15.hdf5')
+# model.load_weights('../study/LPD_COMPETITION/h5/challenge15.hdf5')
+model = load_model('../study/LPD_COMPETITION/h5/challenge30.hdf5')
 
 # 수정 예정
 # predict
 
+sub = pd.read_csv('../study/LPD_COMPETITION/sample.csv')
+save_folder = '../study/LPD_COMPETITION/save_folder'
+num = 5
 '''
 result = []
 for tta in range(50):
     print(f'{tta+1} 번째 TTA 진행중 - mode')
-    pred = model.predict(test_data, steps = len(test_data))
+    pred = model.predict(x_pred, steps = len(x_pred), verbose = True)
     pred = np.argmax(pred, 1)
     result.append(pred)
 
@@ -101,17 +101,13 @@ for tta in range(50):
 
     temp_mode = stats.mode(temp, axis = 1).mode
     sub.loc[:, 'prediction'] = temp_mode
-    sub.to_csv(save_folder + '/sample_{0:03}_{1:02}.csv'.format(filenum, (tta+1)), index = False)
+    sub.to_csv(save_folder + '/sample_{0:03}_{1:02}.csv'.format(num, (tta+1)), index = False)
 
     temp_count = stats.mode(temp, axis = 1).count
     for i, count in enumerate(temp_count):
         if count < tta/2.:
             print(f'{tta+1} 반복 중 {i} 번째는 횟수가 {count} 로 {(tta+1)/2.} 미만!')
 '''
-sub = pd.read_csv('../study/LPD_COMPETITION/sample.csv')
-save_folder = '../study/LPD_COMPETITION/save_folder'
-num = 3
-
 custom = np.zeros([72000, 1000])
 result = []
 for tta in range(10):
