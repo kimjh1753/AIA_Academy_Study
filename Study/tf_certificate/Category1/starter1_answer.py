@@ -41,7 +41,7 @@ def solution_model():
     model.add(Dense(1, activation='linear'))
 
     model.compile(loss='mse', optimizer='adam')
-    model.fit(xs, ys, epochs=1000, batch_size=1)
+    model.fit(xs, ys, epochs=500, batch_size=1)
 
     loss = model.evaluate(xs, ys, batch_size=1)
     print("loss : ", loss)
